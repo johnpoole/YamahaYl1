@@ -6,7 +6,8 @@ shown in 3D on any day of the work.
 | Folder | What is in it |
 |---|---|
 | `engine/` | The procedures engine: checks, paper runs, costs, the day-by-day schedule and the Instructions page. See [engine/README.md](engine/README.md). |
-| `project/` | The YL1 as a project for the engine: the sections, parts and specs (`design.js`), the tools and parts (`catalog.js`), and one file per procedure. |
+| `project/` | The YL1 as a project for the engine: the sections, parts and specs (`design.js`), the tools and parts (`catalog.js`), Yamaha's parts list (`cmsnl.js`), and one file per procedure. |
+| `tools/` | `cmsnl.py`, which rebuilds `project/cmsnl.js` from the parts list at CMSNL. |
 | `bike/` | The 3D bike with the day slider and the photos. |
 | `media/photos/` | The strip-down photos, resized to 1600 px. `media/photos.js` lists them with their captions. |
 | `docs/` | The spec reference, the requirements, the backlog and the best-practice guides. |
@@ -17,7 +18,9 @@ shown in 3D on any day of the work.
 The plan is built like the bike. `plan.yl1` calls one plan per section of the bike, each section
 calls one plan per part, and each part plan holds the jobs done to that part: take it off, assess
 it, rebuild it, put it back. Jobs that span parts sit in their section. Where a part still needs
-work written, it has an open job that says what needs deciding. Jobs in different parts run side
+work written, it has an open job that says what needs deciding. Each part's page lists its rows
+from Yamaha's parts list for the YL1, with the order codes. The parts list has two generator
+diagrams, one for the YL1 and one for the YL1E. Which one fits waits on the frame number. Jobs in different parts run side
 by side, and `after` holds a job until the jobs it needs are done.
 
 ## The timeline

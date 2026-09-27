@@ -1,21 +1,19 @@
-// Carburetion and fuel
+// Air cleaner
 (function (root) {
   'use strict';
   const procedure = {
-    id: 'section.fuel',
+    id: 'part.air-cleaner',
     kind: 'plan',
-    title: 'Carburetion and fuel',
-    purpose: 'Carburetion and fuel: its parts and the jobs that span them.',
+    title: 'Air cleaner',
+    purpose: 'Everything done to the air cleaner.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
-      { call: 'part.carbs' },
-      { call: 'part.air-cleaner' },
-      { call: 'part.tank' },
+      { call: 'filter.check' },
     ],
     checks: [
-      'Every part of this section is done.',
+      'The air cleaner is back on the bike and in spec.',
     ],
     safety: [],
     estimate: { hours: 0 },

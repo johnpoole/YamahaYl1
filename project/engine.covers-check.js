@@ -1,22 +1,18 @@
-// Carburetion and fuel
+// Check the crankcase covers
 (function (root) {
   'use strict';
   const procedure = {
-    id: 'section.fuel',
-    kind: 'plan',
-    title: 'Carburetion and fuel',
-    purpose: 'Carburetion and fuel: its parts and the jobs that span them.',
+    id: 'engine.covers-check',
+    kind: 'task',
+    status: 'open',
+    after: ['engine.remove'],
+    title: 'Check the crankcase covers',
+    purpose: 'Decide what the left and right crankcase covers need: gaskets, screws, and any crack or stripped thread.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [
-      { call: 'part.carbs' },
-      { call: 'part.air-cleaner' },
-      { call: 'part.tank' },
-    ],
-    checks: [
-      'Every part of this section is done.',
-    ],
+    steps: [],
+    checks: [],
     safety: [],
     estimate: { hours: 0 },
   };

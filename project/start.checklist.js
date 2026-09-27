@@ -13,6 +13,8 @@
       'wheel.rear-rebuild',
       'autolube.rebuild',
       'controls.check',
+      'filter.check',
+      'stands.check',
     ],
     title: 'Go through the first-start checklist',
     purpose: 'Nothing gets a kick until every item is checked. Backlog B-040.',

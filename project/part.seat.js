@@ -1,11 +1,11 @@
-// Seat
+// Seat and carrier
 (function (root) {
   'use strict';
   const procedure = {
     id: 'part.seat',
     kind: 'plan',
-    title: 'Seat',
-    purpose: 'Everything done to the seat.',
+    title: 'Seat and carrier',
+    purpose: 'Everything done to the seat and carrier.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
@@ -13,7 +13,7 @@
       { call: 'seat.find' },
     ],
     checks: [
-      'The seat is back on the bike and in spec.',
+      'The seat and carrier are back on the bike and in spec.',
     ],
     safety: [],
     estimate: { hours: 0 },

@@ -1,21 +1,19 @@
-// Carburetion and fuel
+// Main stand, side stand, footrests and brake pedal
 (function (root) {
   'use strict';
   const procedure = {
-    id: 'section.fuel',
+    id: 'part.main-stand',
     kind: 'plan',
-    title: 'Carburetion and fuel',
-    purpose: 'Carburetion and fuel: its parts and the jobs that span them.',
+    title: 'Main stand, side stand, footrests and brake pedal',
+    purpose: 'Everything done to the main stand, side stand, footrests and brake pedal.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
-      { call: 'part.carbs' },
-      { call: 'part.air-cleaner' },
-      { call: 'part.tank' },
+      { call: 'stands.check' },
     ],
     checks: [
-      'Every part of this section is done.',
+      'The main stand, side stand, footrests and brake pedal are back on the bike and in spec.',
     ],
     safety: [],
     estimate: { hours: 0 },

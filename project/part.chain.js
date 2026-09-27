@@ -1,11 +1,11 @@
-// Chain and sprockets
+// Chain, sprockets and chain case
 (function (root) {
   'use strict';
   const procedure = {
     id: 'part.chain',
     kind: 'plan',
-    title: 'Chain and sprockets',
-    purpose: 'Everything done to the chain and sprockets.',
+    title: 'Chain, sprockets and chain case',
+    purpose: 'Everything done to the chain, sprockets and chain case.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
@@ -13,7 +13,7 @@
       { call: 'chain.check' },
     ],
     checks: [
-      'The chain and sprockets are back on the bike and in spec.',
+      'The chain, sprockets and chain case are back on the bike and in spec.',
     ],
     safety: [],
     estimate: { hours: 0 },

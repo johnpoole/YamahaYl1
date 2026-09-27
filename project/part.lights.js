@@ -1,11 +1,11 @@
-// Headlight, speedometer and tail light
+// Lights, horn and speedometer
 (function (root) {
   'use strict';
   const procedure = {
     id: 'part.lights',
     kind: 'plan',
-    title: 'Headlight, speedometer and tail light',
-    purpose: 'Everything done to the headlight, speedometer and tail light.',
+    title: 'Lights, horn and speedometer',
+    purpose: 'Everything done to the lights, horn and speedometer.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
@@ -14,7 +14,7 @@
       { call: 'lights.check' },
     ],
     checks: [
-      'The headlight, speedometer and tail light are back on the bike and in spec.',
+      'The lights, horn and speedometer are back on the bike and in spec.',
     ],
     safety: [],
     estimate: { hours: 0 },

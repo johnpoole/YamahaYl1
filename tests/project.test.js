@@ -10,6 +10,7 @@ const { IDS, load } = require('../project/index.js');
 const project = require('../project/project.js');
 const D = require('../project/design.js');
 const PHOTOS = require('../media/photos.js');
+const CMSNL = require('../project/cmsnl.js');
 
 const dir = path.join(__dirname, '..', 'project');
 const reg = L.byId(load());
@@ -18,7 +19,7 @@ const run = () => S.run(project.root, reg, C, L, project.calendar);
 const STRIP = [...new Set(PHOTOS.map((p) => p.job))];
 
 test('the index lists every procedure file and nothing else', () => {
-  const others = ['catalog', 'design', 'index', 'project'];
+  const others = ['catalog', 'cmsnl', 'design', 'index', 'project'];
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.js')).map((f) => f.slice(0, -3)).filter((f) => !others.includes(f)).sort();
   assert.deepEqual([...IDS].sort(), files);
 });
@@ -65,10 +66,10 @@ test('at the end of the strip-down the bike stands as the last photos show it', 
   const day = r.finish(STRIP[STRIP.length - 1]);
   const state = Object.fromEntries(Object.keys(D.PARTS).map((id) => [id, tl.stateOn(id, day)]));
   assert.deepEqual(state, {
-    'top-end': 'off', 'bottom-end': 'off', gearbox: 'off', clutch: 'off', autolube: 'off', exhaust: 'off',
-    carbs: 'off', tank: 'off', ignition: 'off', charging: 'original', wiring: 'original', lights: 'off',
+    'top-end': 'off', 'bottom-end': 'off', gearbox: 'off', clutch: 'off', autolube: 'off', exhaust: 'off', 'case-covers': 'off',
+    carbs: 'off', 'air-cleaner': 'original', tank: 'off', ignition: 'off', charging: 'original', wiring: 'original', lights: 'off',
     frame: 'original', 'front-end': 'original', 'rear-suspension': 'original', 'front-wheel': 'original', 'rear-wheel': 'original',
-    chain: 'original', controls: 'original', seat: 'off', 'side-covers': 'off', stand: 'restored',
+    chain: 'original', controls: 'original', 'main-stand': 'original', seat: 'off', 'side-covers': 'off', stand: 'restored',
   });
 });
 
@@ -123,4 +124,26 @@ test('every part of the bike sits in a section and has its own plan, and every o
   }
   const inParts = new Set(Object.keys(D.PARTS).flatMap((id) => L.trace(`part.${id}`, reg).map((x) => x.id)));
   for (const p of reg.values()) if (p.status === 'open') assert.ok(inParts.has(p.id), `${p.id} is open but belongs to no part`);
+});
+
+test('every row of the Yamaha parts list sits under a part of the design, and every part but the work stand has rows', () => {
+  assert.equal(CMSNL.length, 27);
+  const rows = CMSNL.flatMap((d) => d.rows.map((r) => ({ ...r, diagram: d.code })));
+  assert.equal(rows.length, 800);
+  for (const r of rows) assert.ok(r.part in D.PARTS, `${r.diagram} ${r.ref} ${r.name} is under "${r.part}", which is not a part`);
+  for (const id of Object.keys(D.PARTS)) {
+    if (id === 'stand') continue;
+    assert.ok(rows.some((r) => r.part === id), `no row of the parts list is under ${id}`);
+  }
+  assert.deepEqual(project.components('part.carbs').map((r) => r.diagram), Array(project.components('part.carbs').length).fill('B-03'));
+  assert.equal(project.components('plan.yl1'), null);
+});
+
+test('rows that are a choice between parts are marked, and the two generators are marked by model', () => {
+  const rows = CMSNL.flatMap((d) => d.rows.map((r) => ({ ...r, diagram: d.code })));
+  const jets = rows.filter((r) => r.diagram === 'B-03' && /JET,\s*MAIN/.test(r.name));
+  assert.ok(jets.length > 1 && jets.every((r) => r.oneOf), 'the main jets are one of several');
+  assert.ok(rows.filter((r) => /ALTERNATE/.test(r.notes)).every((r) => r.oneOf));
+  assert.ok(CMSNL.find((d) => d.code === 'B-08').rows.every((r) => r.variant === 'YL1'));
+  assert.ok(CMSNL.find((d) => d.code === 'B-09').rows.every((r) => r.variant === 'YL1E'));
 });

@@ -1,22 +1,19 @@
-// Carburetion and fuel
+// Check the stands, footrests and brake pedal
 (function (root) {
   'use strict';
   const procedure = {
-    id: 'section.fuel',
-    kind: 'plan',
-    title: 'Carburetion and fuel',
-    purpose: 'Carburetion and fuel: its parts and the jobs that span them.',
+    id: 'stands.check',
+    kind: 'task',
+    status: 'open',
+    builds: ['main-stand'],
+    after: ['frame.treat'],
+    title: 'Check the stands, footrests and brake pedal',
+    purpose: 'Decide what the main stand, side stand, footrests, rubbers and brake pedal and rod need.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [
-      { call: 'part.carbs' },
-      { call: 'part.air-cleaner' },
-      { call: 'part.tank' },
-    ],
-    checks: [
-      'Every part of this section is done.',
-    ],
+    steps: [],
+    checks: [],
     safety: [],
     estimate: { hours: 0 },
   };

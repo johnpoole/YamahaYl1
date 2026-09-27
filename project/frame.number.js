@@ -1,22 +1,17 @@
-// Carburetion and fuel
+// Read the frame number
 (function (root) {
   'use strict';
   const procedure = {
-    id: 'section.fuel',
-    kind: 'plan',
-    title: 'Carburetion and fuel',
-    purpose: 'Carburetion and fuel: its parts and the jobs that span them.',
+    id: 'frame.number',
+    kind: 'task',
+    status: 'open',
+    title: 'Read the frame number',
+    purpose: 'Read the frame number off the steering head and record it. It settles whether the bike is a YL1 or a YL1E, which decides the generator parts and the footrest parts.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [
-      { call: 'part.carbs' },
-      { call: 'part.air-cleaner' },
-      { call: 'part.tank' },
-    ],
-    checks: [
-      'Every part of this section is done.',
-    ],
+    steps: [],
+    checks: [],
     safety: [],
     estimate: { hours: 0 },
   };

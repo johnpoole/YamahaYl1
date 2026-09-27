@@ -10,6 +10,7 @@
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
+      { call: 'frame.number' },
       { call: 'inspect.frame-inside' },
       { call: 'frame.inspect' },
       { call: 'frame.treat' },

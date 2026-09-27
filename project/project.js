@@ -4,6 +4,11 @@
 
   const node = typeof module !== 'undefined' && module.exports;
   const design = node ? require('./design.js') : root.YL1Design;
+  const partsList = () => {
+    const list = node ? require('./cmsnl.js') : root.YL1PartsList;
+    if (!list) throw new Error('project/cmsnl.js did not load before the parts list was needed');
+    return list;
+  };
 
   const project = {
     id: 'yamaha-yl1',
@@ -22,6 +27,7 @@
       fromSiteNone: 'Nothing on hand is used',
       removes: 'Takes off',
       builds: 'Puts back on',
+      components: 'Parts list',
     },
     currency: '$',
     // Four hours on Saturday and Sunday, an hour and a half on weekday evenings.
@@ -49,6 +55,12 @@
     },
     parts: () => design.PARTS,
     sections: () => design.SECTIONS,
+    // The Yamaha parts list rows for a part plan, part.<id>, or null for any other procedure.
+    components: (planId) => {
+      const m = /^part\.(.+)$/.exec(planId);
+      if (!m) return null;
+      return partsList().flatMap((d) => d.rows.filter((r) => r.part === m[1]).map((r) => ({ ...r, diagram: d.code, diagramTitle: d.title })));
+    },
     params: () => design.params,
   };
 

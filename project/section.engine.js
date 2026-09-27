@@ -16,6 +16,7 @@
       { call: 'part.clutch' },
       { call: 'part.autolube' },
       { call: 'part.exhaust' },
+      { call: 'part.case-covers' },
       { call: 'engine.remove' },
       { call: 'engine.install' },
     ],

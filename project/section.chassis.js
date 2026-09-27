@@ -17,6 +17,7 @@
       { call: 'part.rear-wheel' },
       { call: 'part.chain' },
       { call: 'part.controls' },
+      { call: 'part.main-stand' },
       { call: 'brakes.measure' },
       { call: 'tires.check' },
     ],

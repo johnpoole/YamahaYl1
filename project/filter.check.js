@@ -1,22 +1,19 @@
-// Carburetion and fuel
+// Check the air cleaner
 (function (root) {
   'use strict';
   const procedure = {
-    id: 'section.fuel',
-    kind: 'plan',
-    title: 'Carburetion and fuel',
-    purpose: 'Carburetion and fuel: its parts and the jobs that span them.',
+    id: 'filter.check',
+    kind: 'task',
+    status: 'open',
+    builds: ['air-cleaner'],
+    after: ['carbs.install'],
+    title: 'Check the air cleaner',
+    purpose: 'Decide whether the air cleaner case and element are cleaned or replaced.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [
-      { call: 'part.carbs' },
-      { call: 'part.air-cleaner' },
-      { call: 'part.tank' },
-    ],
-    checks: [
-      'Every part of this section is done.',
-    ],
+    steps: [],
+    checks: [],
     safety: [],
     estimate: { hours: 0 },
   };

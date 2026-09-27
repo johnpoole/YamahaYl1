@@ -5,7 +5,7 @@
     id: 'engine.remove',
     kind: 'task',
     oneJobADay: true,
-    removes: ['bottom-end', 'gearbox', 'clutch', 'autolube', 'exhaust'],
+    removes: ['bottom-end', 'gearbox', 'clutch', 'autolube', 'exhaust', 'case-covers'],
     after: ['strip.carbs', 'shop.stand'],
     title: 'Take the engine out',
     purpose: 'The cases have to come apart for the crank seals.',
