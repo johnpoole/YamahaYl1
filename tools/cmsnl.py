@@ -96,6 +96,37 @@ def place(code, row):
     return hits[0]
 
 
+# This bike's number: engine L1-47603, frame Y33-47603. Some rows name the serial range they fit,
+# as "~48845" (up to 48845) or "48846~" (from 48846 on).
+BIKE_NUMBER = 47603
+UP_TO = re.compile(r'~(\d{5})\b')
+FROM = re.compile(r'\b(\d{5})~')
+
+
+def base_name(name):
+    return re.split(r'\s*[~(]|\s+\d', name, maxsplit=1)[0].strip()
+
+
+def mark_fit(rows):
+    """Mark each row whose name gives a serial range as fitting this bike or not, and the rows at the
+    same reference with the same name as the other version."""
+    for r in rows:
+        up, frm = UP_TO.search(r['name']), FROM.search(r['name'])
+        if not up and not frm:
+            continue
+        if up and frm:
+            raise RuntimeError(f'{r["name"]}: gives both an upper and a lower serial; read it by hand')
+        n = int((up or frm).group(1))
+        fits = BIKE_NUMBER <= n if up else BIKE_NUMBER >= n
+        span = f'up to {n}' if up else f'from {n} on'
+        r['fit'] = f'Fits this bike ({span})' if fits else f'Not for this bike ({span})'
+        for other in rows:
+            if other is r or other['ref'] != r['ref'] or 'fit' in other:
+                continue
+            if base_name(other['name']) == base_name(r['name']) and not UP_TO.search(other['name']) and not FROM.search(other['name']):
+                other['fit'] = f'Not for this bike (the other version fits, {span})' if fits else f'Fits this bike (the other version is {span})'
+
+
 def main():
     diagrams = []
     for code, title in DIAGRAMS.items():
@@ -108,6 +139,7 @@ def main():
             # A reference listed more than once is a choice between parts: one of them fits.
             if seen[r['ref']] > 1 or 'ALTERNATE' in r['notes']:
                 r['oneOf'] = True
+        mark_fit(rows)
         diagrams.append({'code': code, 'title': title, 'rows': rows})
         print(f'{code} {title}: {len(rows)} rows', file=sys.stderr)
         time.sleep(2)

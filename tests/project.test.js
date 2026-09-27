@@ -147,3 +147,15 @@ test('rows that are a choice between parts are marked, and only the YL1 generato
   assert.ok(CMSNL.some((d) => d.code === 'B-08'), 'the YL1 generator diagram is listed');
   assert.ok(!CMSNL.some((d) => d.code === 'B-09'), 'the YL1E generator diagram is not');
 });
+
+test('rows that name a serial range are marked for bike number 47603', () => {
+  const fit = (code, ref, name) => CMSNL.find((d) => d.code === code).rows.filter((r) => r.ref === ref && r.name === name).map((r) => r.fit);
+  assert.match(fit('A-04', '1', 'CASE, CRANK (L.H) ~48845')[0], /^Fits this bike/);
+  assert.ok(fit('A-04', '1', 'CASE, CRANK (L.H) (132-15111-02)').every((f) => /^Not for this bike/.test(f)));
+  assert.match(fit('A-06', '18', 'SEAL, LABYRINTH')[0], /^Fits this bike/);
+  assert.match(fit('A-09', '20', 'GEAR, 1ST WHEEL (40T) 48846~')[0], /^Not for this bike/);
+  assert.match(fit('C-03', '6', 'FOOTREST 53964~ YL1 512853- YLLE')[0], /^Not for this bike/);
+  assert.equal(fit('A-06', '15', 'METAL, FILLER ~513353')[0], undefined, 'a six-digit YL1E number is not read as a range');
+  // Rows at a shared reference with other names are left alone: the shim at the main axle's reference.
+  assert.ok(fit('A-09', '6', 'SHIM, DRIVE AXLE').every((f) => f === undefined));
+});

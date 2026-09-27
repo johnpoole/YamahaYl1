@@ -15,7 +15,8 @@
     "name": "CASE, CRANK (L.H) ~48845",
     "notes": "",
     "part": "bottom-end",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Fits this bike (up to 48845)"
    },
    {
     "ref": "1",
@@ -24,7 +25,8 @@
     "name": "CASE, CRANK (L.H) (132-15111-02)",
     "notes": "",
     "part": "bottom-end",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (the other version fits, up to 48845)"
    },
    {
     "ref": "1",
@@ -33,7 +35,8 @@
     "name": "CASE, CRANK (L.H) (132-15111-02)",
     "notes": "",
     "part": "bottom-end",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (the other version fits, up to 48845)"
    },
    {
     "ref": "2",
@@ -614,7 +617,8 @@
     "name": "SEAL, LABYRINTH ~39244",
     "notes": "",
     "part": "bottom-end",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (up to 39244)"
    },
    {
     "ref": "18",
@@ -623,7 +627,8 @@
     "name": "SEAL, LABYRINTH",
     "notes": "",
     "part": "bottom-end",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Fits this bike (the other version is up to 39244)"
    },
    {
     "ref": "19",
@@ -1074,7 +1079,8 @@
     "qty": 1,
     "name": "GEAR, 4TH PINION (27T) 48846~",
     "notes": "",
-    "part": "gearbox"
+    "part": "gearbox",
+    "fit": "Not for this bike (from 48846 on)"
    },
    {
     "ref": "11",
@@ -1083,7 +1089,8 @@
     "name": "GEAR, 4TH PINION (27T) 48846~",
     "notes": "",
     "part": "gearbox",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (from 48846 on)"
    },
    {
     "ref": "2",
@@ -1124,7 +1131,8 @@
     "name": "AXLE, MAIN (13T) 48846~",
     "notes": "",
     "part": "gearbox",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (from 48846 on)"
    },
    {
     "ref": "6",
@@ -1133,7 +1141,8 @@
     "name": "AXLE, MAIN (13T) 48846~",
     "notes": "",
     "part": "gearbox",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (from 48846 on)"
    },
    {
     "ref": "6",
@@ -1296,7 +1305,8 @@
     "name": "GEAR, 1ST WHEEL (40T) 48846~",
     "notes": "",
     "part": "gearbox",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (from 48846 on)"
    },
    {
     "ref": "20",
@@ -1305,7 +1315,8 @@
     "name": "GEAR, 1ST WHEEL (40T) 48846~",
     "notes": "",
     "part": "gearbox",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (from 48846 on)"
    },
    {
     "ref": "21",
@@ -1857,7 +1868,8 @@
     "name": "CASE, AIR CLEANER ~32600",
     "notes": "",
     "part": "air-cleaner",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Not for this bike (up to 32600)"
    },
    {
     "ref": "1",
@@ -1866,7 +1878,8 @@
     "name": "CASE, AIR CLEANER 1",
     "notes": "",
     "part": "air-cleaner",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Fits this bike (the other version is up to 32600)"
    },
    {
     "ref": "1",
@@ -1875,7 +1888,8 @@
     "name": "CASE, AIR CLEANER 1",
     "notes": "",
     "part": "air-cleaner",
-    "oneOf": true
+    "oneOf": true,
+    "fit": "Fits this bike (the other version is up to 32600)"
    },
    {
     "ref": "2",
@@ -3554,7 +3568,8 @@
     "qty": 1,
     "name": "FOOTREST 53964~ YL1 512853- YLLE",
     "notes": "YL1 / YL1E",
-    "part": "main-stand"
+    "part": "main-stand",
+    "fit": "Not for this bike (from 53964 on)"
    },
    {
     "ref": "7",
@@ -3562,7 +3577,8 @@
     "qty": 1,
     "name": "FOOTREST 53964~ YL1 512853- YLLE",
     "notes": "YL1 / YL1E",
-    "part": "main-stand"
+    "part": "main-stand",
+    "fit": "Not for this bike (from 53964 on)"
    },
    {
     "ref": "8",
@@ -3570,7 +3586,8 @@
     "qty": 1,
     "name": "BRACKET, FOOTREST 53964~ YL1 512853- YL1E",
     "notes": "YL1 / YL1E",
-    "part": "main-stand"
+    "part": "main-stand",
+    "fit": "Not for this bike (from 53964 on)"
    },
    {
     "ref": "9",
