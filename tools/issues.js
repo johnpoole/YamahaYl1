@@ -140,7 +140,9 @@ function main() {
   for (const w of want) if (w.parentKey) kids.set(w.parentKey, [...(kids.get(w.parentKey) || []), byKey.get(w.key).id]);
   for (const [pk, order] of kids) {
     const parent = byKey.get(pk);
-    const have = ids(`repos/${repo}/issues/${parent.number}/sub_issues?per_page=100`);
+    // Retired issues stay under their parent, closed; only the plan's own sub-issues are ordered.
+    const planned = new Set(order);
+    const have = ids(`repos/${repo}/issues/${parent.number}/sub_issues?per_page=100`).filter((id) => planned.has(id));
     if (have.join() === order.join()) continue;
     if (have[0] !== order[0]) write('PATCH', `repos/${repo}/issues/${parent.number}/sub_issues/priority`, { sub_issue_id: order[0], before_id: have[0] });
     for (let i = 1; i < order.length; i++) write('PATCH', `repos/${repo}/issues/${parent.number}/sub_issues/priority`, { sub_issue_id: order[i], after_id: order[i - 1] });
