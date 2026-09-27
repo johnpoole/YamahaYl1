@@ -82,6 +82,7 @@ a{color:var(--ember)}
   <div class="dayrow">
     <label for="day"><span>The bike on</span><output id="daydate">Loading the schedule…</output></label>
     <input type="range" id="day" min="0" max="1" step="1" value="1" disabled>
+    <button type="button" class="btn" id="next" disabled>Next day</button>
     <p id="daytext" class="muted"></p>
     <div class="jumps" id="jumps"></div>
   </div>
@@ -657,13 +658,12 @@ try {
 
   // ---------- the bike by day ----------
   // Runs the rebuild schedule. Each part is as found until a job takes it off, and rebuilt once
-  // the job that puts it back on is finished. The slider steps through the days with work or a
-  // photo, so the months with nothing done between the strip-down and the rebuild take no room.
+  // the job that puts it back on is finished. The slider counts only the days with work, so the
+  // days with nothing done take no room. A photo belongs to the last day of work on or before it.
   {
-    const dayInput = document.getElementById('day'), dayDate = document.getElementById('daydate'), dayText = document.getElementById('daytext');
+    const dayInput = document.getElementById('day'), nextBtn = document.getElementById('next'), dayDate = document.getElementById('daydate'), dayText = document.getElementById('daytext');
     const photoImg = document.getElementById('photo'), photoCap = document.getElementById('photocap'), photoDate = document.getElementById('photodate');
     const jobsList = document.getElementById('jobs'), partsTable = document.getElementById('parts');
-    const longDate = (iso) => new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
     const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const STATE = { original: 'As found', off: 'Off the bike', restored: 'Rebuilt' };
     const photoDays = PHOTOS.map((p) => Dz.dayOf(p.date));
@@ -671,41 +671,41 @@ try {
 
     const thumbs = PHOTOS.map((p, i) => {
       const b = document.createElement('button');
-      b.title = `${longDate(p.date)}: ${p.caption}`;
+      b.title = p.caption;
       b.innerHTML = `<img src="../media/photos/${esc(p.file)}" alt="" loading="lazy">`;
       b.querySelector('img').addEventListener('error', () => showError(new Error(`the photo media/photos/${p.file} did not load`)));
-      b.addEventListener('click', () => { photoPick = i; show(photoDays[i]); });
+      b.addEventListener('click', () => { photoPick = i; show(photoStop[i]); });
       document.getElementById('thumbs').appendChild(b);
       return b;
     });
     let photoPick = null;
 
-    let result = null, timeline = null, reg = null, stops = null;
-    function show(v) {
-      const i = stops.indexOf(v);
-      if (i < 0) throw new Error(`day ${v} is not a stop on the slider`);
+    // stops: the schedule's days with work, in order. Day n on the page is stops[n - 1].
+    let result = null, timeline = null, reg = null, stops = null, photoStop = null;
+    function show(i) {
+      if (!(Number.isInteger(i) && i >= 0 && i < stops.length)) throw new Error(`day ${i + 1} is not a day of work; there are ${stops.length}`);
       dayInput.value = String(i);
-      applyDay(v);
+      applyDay(i);
     }
-    function applyDay(v) {
+    function applyDay(i) {
+      const v = stops[i];
       showStates((id) => timeline.stateOn(id, v));
-      dayDate.textContent = `Day ${v} · ${longDate(result.dateOf(v))}`;
+      dayDate.textContent = `Day ${i + 1} of ${stops.length}`;
+      nextBtn.disabled = i >= stops.length - 1;
 
-      // The photo taken that day, or the last one before it.
-      let pi = photoPick !== null && photoDays[photoPick] === v ? photoPick : photoDays.reduce((best, d, i) => (d <= v ? i : best), 0);
+      // The photo from that day, or the last one before it.
+      let pi = photoPick !== null && photoStop[photoPick] === i ? photoPick : photoStop.reduce((best, d, k) => (d <= i ? k : best), 0);
       photoPick = null;
       const p = PHOTOS[pi];
       photoImg.src = `../media/photos/${p.file}`;
       photoImg.alt = p.caption;
       photoCap.textContent = p.caption;
-      photoDate.textContent = photoDays[pi] === v ? longDate(p.date) : `Latest photo, ${longDate(p.date)}`;
+      photoDate.textContent = photoStop[pi] === i ? '' : `Latest photo, day ${photoStop[pi] + 1}`;
       thumbs.forEach((b, i) => b.setAttribute('aria-pressed', String(i === pi)));
 
       const day = result.days[v];
       const did = day.did.filter((x) => reg.get(x.id).kind !== 'plan');
-      jobsList.innerHTML = did.length
-        ? did.map((x) => `<li><a href="../project/#${esc(x.id)}">${esc(reg.get(x.id).title)}</a>, ${x.hours.toFixed(1)} h${result.done[result.jobs.findIndex((j) => j.id === x.id)] === v ? ', finished' : ''}</li>`).join('')
-        : '<li>No work on this day.</li>';
+      jobsList.innerHTML = did.map((x) => `<li><a href="../project/#${esc(x.id)}">${esc(reg.get(x.id).title)}</a>, ${x.hours.toFixed(1)} h${result.done[result.jobs.findIndex((j) => j.id === x.id)] === v ? ', finished' : ''}</li>`).join('');
 
       const ids = Object.keys(PARTS);
       const count = (s) => ids.filter((id) => id !== 'stand' && timeline.stateOn(id, v) === s).length;
@@ -716,7 +716,8 @@ try {
         return `<tr><td>${esc(PARTS[id])}</td><td class="st-${s}">${text}</td></tr>`;
       }).join('');
     }
-    dayInput.addEventListener('input', () => applyDay(stops[+dayInput.value]));
+    dayInput.addEventListener('input', () => applyDay(+dayInput.value));
+    nextBtn.addEventListener('click', () => show(+dayInput.value + 1));
 
     const Pj = window.PROJECT, PL = window.ProcLib, PS = window.ProcSchedule;
     if (!Pj || !PL || !PS || !window.ProcLoad || !window.Catalog || !window.PROCEDURE_IDS) throw new Error('the rebuild schedule scripts did not load');
@@ -726,7 +727,14 @@ try {
       if (result.unfinished.length) throw new Error(`the schedule leaves jobs unfinished: ${result.unfinished.join(', ')}`);
       timeline = PS.partTimeline(result, reg);
       const last = Math.max(...result.done);
-      stops = [...new Set([0, ...photoDays, ...result.days.filter((d) => d.did.length).map((d) => d.day), last])].sort((a, b) => a - b);
+      stops = result.days.filter((d) => d.did.length).map((d) => d.day);
+      if (stops[stops.length - 1] !== last) throw new Error(`the last job finishes on schedule day ${last}, which has no work recorded`);
+      photoStop = photoDays.map((d, k) => {
+        const i = stops.reduce((best, s, j) => (s <= d ? j : best), -1);
+        if (i < 0) throw new Error(`the photo ${PHOTOS[k].file} was taken before the first day of work`);
+        return i;
+      });
+      const stopOf = (v) => { const i = stops.indexOf(v); if (i < 0) throw new Error(`schedule day ${v} has no work`); return i; };
       dayInput.max = String(stops.length - 1);
       dayInput.disabled = false;
 
@@ -734,12 +742,12 @@ try {
       const jump = (text, v) => {
         const b = document.createElement('button');
         b.className = 'btn'; b.textContent = text;
-        b.addEventListener('click', () => show(v));
+        b.addEventListener('click', () => show(stopOf(v)));
         jumps.appendChild(b);
       };
       jump('As found', 0);
       for (const id of Pj.schedule.milestones) jump(reg.get(id).title.replace(/,.*$/, ''), result.finish(id));
-      show(last);
+      show(stops.length - 1);
     }).catch(showError);
   }
 
