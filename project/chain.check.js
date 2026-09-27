@@ -4,17 +4,23 @@
   const procedure = {
     id: 'chain.check',
     kind: 'task',
-    status: 'open',
     after: ['strip.rear-wheel'],
     title: 'Check the chain and sprockets',
-    purpose: 'Measure the #420 chain for stretch and the sprockets for wear, and decide whether to replace them as a set.',
+    purpose: 'Decide whether the chain and sprockets are reused or replaced as a set.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [],
-    checks: [],
+    steps: [
+      'Clean the chain and lay it flat.',
+      'Look for stiff links, rust and cracked side plates.',
+      'Check the sprocket teeth for hooking or thinning.',
+      'Fit a replacement {spec.chainSize} chain and sprockets as a set if either is worn, and add them to the parts list.',
+    ],
+    checks: [
+      'The chain and sprockets are judged fit to reuse or listed for replacement.',
+    ],
     safety: [],
-    estimate: { hours: 0 },
+    estimate: { hours: 0.5 },
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = procedure;
   else (root.PROCEDURES = root.PROCEDURES || []).push(procedure);

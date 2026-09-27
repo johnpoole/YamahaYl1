@@ -6,18 +6,26 @@
   const procedure = {
     id: 'clutch.assess',
     kind: 'task',
-    status: 'open',
     window: { from: design.dayOf(design.RESUME) },
     after: ['engine.remove'],
     title: 'Assess the clutch',
-    purpose: 'Decide whether the clutch needs new plates or springs. The limits are in the spec reference: spring free length 25 mm, friction plates no thinner than 3.9 mm.',
-    requires: { tools: [], materials: [], skills: [] },
+    purpose: 'Measure the clutch plates and springs and decide what the clutch needs.',
+    requires: { tools: ['jis-drivers', 'impact-driver', 'caliper'], materials: [], skills: ['skill.jis-screws', 'skill.measure'] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [],
-    checks: [],
+    steps: [
+      'Take off the engine right side cover. The clutch sits on the right end of the transmission input shaft.',
+      'Take out the spring screws and lift off the pressure plate and springs.',
+      'Measure the free length of each clutch spring. Standard is {spec.clutchSpring} mm; renew any that is 1 mm or more shorter.',
+      'Measure the thickness of each friction disc. Standard is 4 mm; renew any thinner than {spec.clutchDiscMin} mm.',
+      'Check the steel plates for warping or blue heat marks, and the drum slots and hub splines for notches.',
+      'Write every reading down and add what must be renewed to the parts list.',
+    ],
+    checks: [
+      'Every spring and friction disc measured and recorded, and a keep or renew decision for each.',
+    ],
     safety: [],
-    estimate: { hours: 0 },
+    estimate: { hours: 1.5 },
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = procedure;
   else (root.PROCEDURES = root.PROCEDURES || []).push(procedure);

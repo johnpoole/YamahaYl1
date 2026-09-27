@@ -6,18 +6,25 @@
   const procedure = {
     id: 'engine.covers-check',
     kind: 'task',
-    status: 'open',
     window: { from: design.dayOf(design.RESUME) },
     after: ['engine.remove'],
     title: 'Check the crankcase covers',
-    purpose: 'Decide what the left and right crankcase covers need: gaskets, screws, and any crack or stripped thread.',
-    requires: { tools: [], materials: [], skills: [] },
+    purpose: 'Check the left and right crankcase covers for cracks, stripped threads and worn screws.',
+    requires: { tools: ['jis-drivers', 'impact-driver'], materials: [], skills: ['skill.jis-screws'] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [],
-    checks: [],
+    steps: [
+      'Clean both covers inside and out.',
+      'Look for cracks, especially around the screw bosses.',
+      'Check each screw hole thread; mark any that are stripped.',
+      'Check the oil level gauge and the oil drain plug and its washer.',
+      'Add a new cover gasket and any worn or chewed screws to the parts list.',
+    ],
+    checks: [
+      'Both covers checked, and every needed gasket and screw on the parts list.',
+    ],
     safety: [],
-    estimate: { hours: 0 },
+    estimate: { hours: 0.5 },
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = procedure;
   else (root.PROCEDURES = root.PROCEDURES || []).push(procedure);

@@ -6,17 +6,21 @@
   const procedure = {
     id: 'covers.find',
     kind: 'task',
-    status: 'open',
     window: { from: design.dayOf(design.RESUME) },
     title: 'Find the side covers',
-    purpose: 'The bike was found without its side covers. Find them or replacements.',
+    purpose: 'The bike was found without its side covers. Find the originals or replacements.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [],
-    checks: [],
+    steps: [
+      'Search the garage and storage for the original side covers.',
+      'If not found, find replacements from the parts list, diagram C-01 at CMSNL, or used YL1 covers.',
+    ],
+    checks: [
+      'Both side covers in hand.',
+    ],
     safety: [],
-    estimate: { hours: 0 },
+    estimate: { hours: 1 },
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = procedure;
   else (root.PROCEDURES = root.PROCEDURES || []).push(procedure);

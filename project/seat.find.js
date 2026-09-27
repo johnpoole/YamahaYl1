@@ -6,17 +6,21 @@
   const procedure = {
     id: 'seat.find',
     kind: 'task',
-    status: 'open',
     window: { from: design.dayOf(design.RESUME) },
     title: 'Find a seat',
-    purpose: 'The bike was found without its seat. Find the seat or a replacement.',
+    purpose: 'The bike was found without its seat. Find the original seat or a replacement.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
-    steps: [],
-    checks: [],
+    steps: [
+      'Search the garage and storage for the original seat.',
+      'If not found, find a replacement from the parts list, diagram C-10 at CMSNL, or a used YL1 seat.',
+    ],
+    checks: [
+      'A seat in hand that fits the frame.',
+    ],
     safety: [],
-    estimate: { hours: 0 },
+    estimate: { hours: 1 },
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = procedure;
   else (root.PROCEDURES = root.PROCEDURES || []).push(procedure);

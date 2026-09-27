@@ -62,5 +62,8 @@ test('a job issue carries the steps and when it is done, and no backlog numbers'
   assert.match(w.body, /\*\*Done when\*\*/);
   assert.equal((w.body.match(/^\d+\. /gm) || []).length, p.steps.length);
   for (const x of want) assert.ok(!/Backlog B-\d/.test(x.body), `${x.key} still names a backlog number`);
-  assert.match(byKey.get('tank.find').body, /^\*\*Not written yet\.\*\* /);
+  const copy = L.byId(load().map((p) => (p.id === 'tank.find' ? { ...p, status: 'open', steps: [], checks: [], estimate: { hours: 0 } } : p)));
+  const open = desired(copy, 'https://example.test/YamahaYl1/', project.params(), require('../project/catalog.js')).find((x) => x.key === 'tank.find');
+  assert.match(open.body, /^\*\*Not written yet\.\*\* /);
+  assert.deepEqual(open.labels, ['job', 'open']);
 });

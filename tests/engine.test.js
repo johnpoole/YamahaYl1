@@ -87,7 +87,7 @@ test('the checker keeps the plan shaped like the bike', () => {
   assert.match(problems(({ reg }) => { reg.get('section.chassis').steps = reg.get('section.chassis').steps.filter((s) => s.call !== 'part.chain'); }), /section\.chassis does not call part\.chain/);
   assert.match(problems(({ reg }) => { reg.get('carbs.install').builds = ['carbs', 'chain']; }), /carbs\.install builds "chain", but section\.chassis does not run it/);
   assert.match(problems(({ parts }) => { parts.chain = { ...parts.chain, section: 'wheels' }; }), /part "chain" names section "wheels"/);
-  assert.match(problems(({ reg }) => { reg.get('chain.check').steps = ['Measure the chain.']; }), /an open task has no steps and 0 hours yet/);
+  assert.match(problems(({ reg }) => { reg.get('chain.check').status = 'open'; }), /an open task has no steps and 0 hours yet/);
 });
 
 test('a job with after starts only once the jobs it comes after are finished', () => {

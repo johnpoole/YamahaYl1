@@ -50,3 +50,11 @@ test('the photos are web-sized', () => {
     assert.ok(size < 800 * 1024, `${p.file} is ${Math.round(size / 1024)} kB`);
   }
 });
+
+test('the photo index lists every photo with its caption, and the work log has an entry for each strip-down step', () => {
+  const index = fs.readFileSync(path.join(root, 'docs', 'Photo_Index.md'), 'utf8');
+  for (const p of PHOTOS) assert.ok(index.includes(`[${p.file}]`) && index.includes(p.caption), `${p.file} is not in docs/Photo_Index.md with its caption`);
+  const log = fs.readFileSync(path.join(root, 'docs', 'Work_Log.md'), 'utf8');
+  const steps = [...new Set(PHOTOS.map((p) => p.job))].length;
+  assert.equal((log.match(/^### \d+\. /gm) || []).length, steps);
+});
