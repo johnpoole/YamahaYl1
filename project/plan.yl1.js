@@ -5,7 +5,7 @@
     id: 'plan.yl1',
     kind: 'plan',
     title: 'Rebuild the YL1',
-    purpose: 'Take Yamaha YL1 Twin Jet 100, engine {spec.serial}, from the bike as found to a safe, reliable, road-legal machine, with every step recorded.',
+    purpose: 'Get the YL1, engine {spec.serial}, running well and safe to ride, with every step recorded.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],

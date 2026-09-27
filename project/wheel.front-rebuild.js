@@ -1,4 +1,4 @@
-// Rebuild and refit the front wheel
+// Service and refit the front wheel
 (function (root) {
   'use strict';
   const procedure = {
@@ -6,15 +6,15 @@
     kind: 'task',
     builds: ['front-wheel'],
     after: ['brakes.measure', 'tires.check', 'parts.order', 'fork.rebuild'],
-    title: 'Rebuild and refit the front wheel',
-    purpose: 'Bearings, brake and tire, and the wheel back on.',
-    requires: { tools: ['sockets', 'wrenches', 'bearing-drivers', 'spoke-wrench', 'dial-indicator', 'tire-irons', 'pressure-gauge'], materials: [{ id: 'wheel-bearings', qty: 1 }, { id: 'brake-shoes', qty: 1 }, { id: 'tires', qty: 1 }], skills: [] },
+    title: 'Service and refit the front wheel',
+    purpose: 'A new tire, with the bearings, shoes and spokes seen to only where the checks find wear.',
+    requires: { tools: ['sockets', 'wrenches', 'bearing-drivers', 'spoke-wrench', 'dial-indicator', 'tire-irons', 'pressure-gauge'], materials: [{ id: 'tires', qty: 1 }], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
-      'Replace the wheel bearings.',
-      'True the wheel to under 1.5 mm runout.',
-      'Fit new shoes and springs.',
+      'Spin the wheel on its axle and feel the bearings. Replace them only if they are rough or loose.',
+      'Check the runout with the dial indicator. True the wheel only if it is over 1.5 mm.',
+      'Fit new brake shoes only if the brake check found them under the limit.',
       'Fit a new {spec.tire} tire.',
       'Refit the wheel and the brake cable.',
       'Set the tire pressure to {spec.pressureFront}.',

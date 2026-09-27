@@ -45,7 +45,7 @@ node tools/issues.js
 ```
 
 This brings the issues in line with the plan and writes the closed jobs to `project/done.js`, which
-the pages show as done. A closed issue shows on the pages once this has run and been pushed.
+the pages show as done. When a job leaves the plan, its issue is closed as not planned. A closed issue shows on the pages once this has run and been pushed.
 
 ## Run it
 

@@ -4,9 +4,9 @@
   const procedure = {
     id: 'engine.top-end',
     kind: 'task',
-    after: ['engine.bore', 'engine.bottom-end'],
+    after: ['measure.bores', 'engine.bottom-end'],
     title: 'Build the top end',
-    purpose: 'Fit pistons, rings, cylinders and heads. Backlog B-034.',
+    purpose: 'Fit the pistons, rings, cylinders and heads.',
     requires: { tools: ['ring-compressor', 'circlip-pliers', 'torque-wrench', 'feeler-gauges'], materials: [{ id: 'gaskets', qty: 1 }, { id: 'two-stroke-oil', qty: 0.25 }], skills: ['skill.clean-assembly', 'skill.torque', 'skill.twin-matching'] },
     produces: { tools: [], materials: [] },
     preconditions: [],

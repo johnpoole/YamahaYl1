@@ -39,7 +39,6 @@
 
     'vacuum-gauge': { name: 'Twin vacuum gauge for carb sync', source: 'bought', cost: 45 },
     'spoke-wrench': { name: 'Spoke nipple wrench', source: 'bought', cost: 10 },
-    'micrometer-large': { name: 'Micrometer, 25–50 mm', source: 'bought', cost: 45 },
     'tire-irons': { name: 'Tire irons and rim protectors', source: 'bought', cost: 25 },
     'pressure-gauge': { name: 'Tire pressure gauge', source: 'bought', cost: 10 },
     'dial-adapter': { name: 'Spark plug hole adapter for the dial indicator, M14', source: 'bought', cost: 20 },
@@ -67,7 +66,6 @@
     tires: { name: 'Tires, {spec.tire}', unit: 'count', source: 'bought', cost: 75 },
     'fuel-hose': { name: 'Fuel hose, 6 mm', unit: 'm', source: 'bought', cost: 5 },
     'tank-kit': { name: 'Tank cleaner and sealer kit', unit: 'kits', source: 'bought', cost: 60 },
-    'rust-converter': { name: 'Rust converter and primer', unit: 'kits', source: 'bought', cost: 30 },
     fuel: { name: 'Fresh unleaded fuel, 91 octane or higher', unit: 'litres', source: 'bought', cost: 1.5 },
   };
 

@@ -13,7 +13,6 @@
       { call: 'inspect.frame-inside' },
       { call: 'frame.number' },
       { call: 'frame.inspect' },
-      { call: 'frame.treat' },
     ],
     checks: [
       'The frame is back on the bike and in spec.',

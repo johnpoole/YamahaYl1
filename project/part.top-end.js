@@ -12,8 +12,6 @@
     steps: [
       { call: 'strip.top-end' },
       { call: 'measure.bores' },
-      { call: 'measure.pistons' },
-      { call: 'engine.bore' },
       { call: 'engine.top-end' },
     ],
     checks: [

@@ -4,7 +4,7 @@ const L = require('../engine/lib.js');
 const { load } = require('../project/index.js');
 const project = require('../project/project.js');
 const PHOTOS = require('../media/photos.js');
-const { desired } = require('../tools/issues.js');
+const { desired, retired } = require('../tools/issues.js');
 
 const reg = L.byId(load());
 const want = desired(reg, 'https://example.test/YamahaYl1/', project.params(), require('../project/catalog.js'));
@@ -66,4 +66,13 @@ test('a job issue carries the steps and when it is done, and no backlog numbers'
   const open = desired(copy, 'https://example.test/YamahaYl1/', project.params(), require('../project/catalog.js')).find((x) => x.key === 'tank.find');
   assert.match(open.body, /^\*\*Not written yet\.\*\* /);
   assert.deepEqual(open.labels, ['job', 'open']);
+});
+
+test('an open issue whose job has left the plan is retired, and a closed one is left alone', () => {
+  const byKey = new Map([
+    ['carbs.rebuild', { number: 40, state: 'open' }],
+    ['frame.treat', { number: 70, state: 'open' }],
+    ['engine.bore', { number: 19, state: 'closed' }],
+  ]);
+  assert.deepEqual(retired(byKey, want), [{ key: 'frame.treat', number: 70 }]);
 });

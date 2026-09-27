@@ -10,7 +10,6 @@
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
-      { call: 'fork.remove' },
       { call: 'fork.rebuild' },
     ],
     checks: [

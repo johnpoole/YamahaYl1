@@ -1,12 +1,12 @@
-// Service after break-in
+// Service after the first rides
 (function (root) {
   'use strict';
   const procedure = {
     id: 'service.post-break-in',
     kind: 'task',
     after: ['ride.break-in'],
-    title: 'Service after break-in',
-    purpose: 'Re-set everything that settles in the first {breakIn.km} km. Backlog B-051.',
+    title: 'Service after the first rides',
+    purpose: 'Re-set everything that settles once the engine has run hot.',
     requires: { tools: ['torque-wrench', 'feeler-gauges', 'timing-light', 'point-file'], materials: [{ id: 'sae30-oil', qty: 0.75 }], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],

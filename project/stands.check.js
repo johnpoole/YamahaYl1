@@ -1,11 +1,13 @@
 // Check the stands, footrests and brake pedal
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/stands.check.js');
   const procedure = {
     id: 'stands.check',
     kind: 'task',
     builds: ['main-stand'],
-    after: ['frame.treat'],
+    window: { from: design.dayOf(design.RESUME) },
     title: 'Check the stands, footrests and brake pedal',
     purpose: 'Check the main stand, side stand, footrests and brake pedal.',
     requires: { tools: ['sockets', 'wrenches'], materials: [], skills: [] },

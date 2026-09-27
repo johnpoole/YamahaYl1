@@ -78,7 +78,7 @@ test('the checker catches an after that names nothing, names itself, or waits in
 });
 
 test('after may name a job in another part of the tree, earlier or later', () => {
-  // frame.treat sits in the chassis section and waits for engine.remove in the engine section.
+  // exhaust.install sits in the engine section and would wait for a wheel in the chassis section.
   assert.equal(problems(({ reg }) => { reg.get('exhaust.install').after = ['wheel.rear-rebuild']; }), '');
 });
 
@@ -108,11 +108,11 @@ test('a job with after starts only once the jobs it comes after are finished', (
 test('a job held by after waits even when nothing it uses comes from the other job', () => {
   const reg = fresh().reg;
   const without = S.run(project.root, reg, C, L, project.calendar);
-  assert.ok(without.finish('rear.suspension') < without.finish('engine.bore'), 'the shocks are done before the bores come back');
-  reg.get('rear.suspension').after = ['engine.bore'];
+  assert.ok(without.finish('rear.suspension') < without.finish('engine.split-cases'), 'the shocks are done before the cases are split');
+  reg.get('rear.suspension').after = ['engine.split-cases'];
   const withAfter = S.run(project.root, reg, C, L, project.calendar);
-  assert.ok(withAfter.finish('rear.suspension') > withAfter.finish('engine.bore'),
-    `shocks done day ${withAfter.finish('rear.suspension')}, bores back day ${withAfter.finish('engine.bore')}`);
+  assert.ok(withAfter.finish('rear.suspension') > withAfter.finish('engine.split-cases'),
+    `shocks done day ${withAfter.finish('rear.suspension')}, cases split day ${withAfter.finish('engine.split-cases')}`);
 });
 
 test('the scheduler refuses jobs that wait on each other in a loop, rather than leave them undone', () => {
@@ -130,9 +130,9 @@ test('the part timeline gives each part as found, off and restored in the order 
   assert.equal(tl.stateOn('carbs', off), 'off');
   assert.equal(tl.stateOn('carbs', back - 1), 'off');
   assert.equal(tl.stateOn('carbs', back), 'restored');
-  // The forks come off and go back on; the last event on the part wins.
-  assert.equal(tl.stateOn('front-end', r.finish('fork.remove')), 'off');
-  assert.equal(tl.stateOn('front-end', r.finish('fork.rebuild')), 'restored');
+  // The front wheel comes off and goes back on; the last event on the part wins.
+  assert.equal(tl.stateOn('front-wheel', r.finish('strip.front-wheel')), 'off');
+  assert.equal(tl.stateOn('front-wheel', r.finish('wheel.front-rebuild')), 'restored');
   const days = tl.events.map((e) => e.day);
   assert.deepEqual(days, [...days].sort((a, b) => a - b));
 });

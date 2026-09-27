@@ -7,8 +7,9 @@
 // after another is marked as blocked by it. The job files stay the instructions; an issue
 // carries the job's purpose, a link to its page, and its state. The first time a job's issue is
 // made it is closed if the strip-down photos show the job done. After that the issue's state is
-// the owner's: this script never opens or closes an issue it has made before. It writes the jobs
-// whose issues are closed to project/done.js.
+// the owner's: this script never opens or closes an issue it has made before, with one exception.
+// When a job, part or section leaves the plan, its open issue is closed as not planned. It writes
+// the jobs whose issues are closed to project/done.js.
 'use strict';
 
 const { execFileSync } = require('node:child_process');
@@ -164,6 +165,14 @@ function main() {
     }
   }
 
+  // Issues whose job, part or section has left the plan are closed as not planned.
+  const gone = retired(byKey, want);
+  if (gone.length) console.log(`Closing as not planned, no longer in the plan: ${gone.map((i) => `#${i.number} ${i.key}`).join(', ')}`);
+  for (const i of gone) {
+    write('POST', `repos/${repo}/issues/${i.number}/comments`, { body: `${i.key} is no longer in the plan.` });
+    write('PATCH', `repos/${repo}/issues/${i.number}`, { state: 'closed', state_reason: 'not_planned' });
+  }
+
   // Read back: the jobs whose issues are closed.
   const jobs = new Set(want.filter((w) => w.labels.includes('job')).map((w) => w.key));
   const done = listIssues().filter((i) => i.state === 'closed').map((i) => (MARKER.exec(i.body || '') || [])[1]).filter((id) => jobs.has(id)).sort();
@@ -179,5 +188,11 @@ function main() {
   console.log(`${want.length} issues in the plan: ${created} created, ${updated} updated, ${linked} linked, ${reordered} reordered, ${blocked} blocks added, ${unblocked} removed, ${writes} writes. ${done.length} jobs done. Top issue: https://github.com/${repo}/issues/${top.number}`);
 }
 
-module.exports = { desired, LABELS };
+// The open issues that carry a plan marker the plan no longer has.
+function retired(byKey, want) {
+  const keys = new Set(want.map((w) => w.key));
+  return [...byKey].filter(([k, i]) => !keys.has(k) && i.state === 'open').map(([k, i]) => ({ key: k, number: i.number }));
+}
+
+module.exports = { desired, retired, LABELS };
 if (require.main === module) main();

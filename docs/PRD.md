@@ -23,13 +23,13 @@
 
 ## Purpose
 
-Restore a Yamaha YL1 Twin Jet 100 (engine serial L1-47603) to a safe, reliable, mechanically correct, and road-legal operating condition, with full documentation of the process for future reference and reproducibility.
+Get a Yamaha YL1 Twin Jet 100 (engine serial L1-47603) running well and safe to ride on the road, with the work recorded. Parts are checked and reused where they pass, and replaced or machined only when a check fails. Restoring the bike to new is not a goal.
 
 ---
 
 ## Goals
 
-1. **Mechanical integrity** — All engine, fuel, electrical, brake, and chassis systems are rebuilt to factory specification or documented deviation. No systems left in unknown condition.
+1. **Mechanical integrity** — All engine, fuel, electrical, brake, and chassis systems are checked against factory specification and repaired where they fail. No systems left in unknown condition.
 
 2. **Safety** — The bike passes a self-administered safety inspection (see Success Criteria) and, where applicable, a state vehicle inspection. No deferred safety items.
 
@@ -66,7 +66,7 @@ The project is complete when **all** of the following are true:
 
 ### Engine
 - [ ] Crank seals replaced, cases sealed, no air leaks confirmed
-- [ ] Bore measured; cylinder within spec or re-bored to oversize with matching pistons
+- [ ] Bores and pistons checked; a cylinder is machined and fitted with a new piston only if it is scored
 - [ ] Rings fitted and end-gap confirmed in spec
 - [ ] Head torqued to spec; compression checked (both cylinders within 10% of each other)
 - [ ] Autolube system primed, bled, and delivering oil (or premix system documented as ADR)

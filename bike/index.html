@@ -69,7 +69,7 @@ a{color:var(--ember)}
 <script src="../nav.js"></script>
 <div class="wrap">
 <h1>Yamaha YL1 Twin Jet 100</h1>
-<p class="sub">Engine L1-47603. Move the slider to see the bike on any day of work, from the day it was found to the day it is finished. Parts as found are dull and rusty. Parts that are off the bike are hidden. Rebuilt parts are clean.</p>
+<p class="sub">Engine L1-47603. Move the slider to see the bike on any day of work, from the day it was found to the day it is finished. Parts as found are dull and rusty. Parts that are off the bike are hidden. Parts back on after their work are clean.</p>
 <div id="err" role="alert"></div>
 
 <div class="layout">
@@ -672,7 +672,7 @@ try {
     const photoImg = document.getElementById('photo'), photoCap = document.getElementById('photocap'), photoDate = document.getElementById('photodate');
     const jobsList = document.getElementById('jobs'), partsTable = document.getElementById('parts');
     const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const STATE = { original: 'As found', off: 'Off the bike', restored: 'Rebuilt' };
+    const STATE = { original: 'As found', off: 'Off the bike', restored: 'Back on' };
     photoImg.addEventListener('error', () => showError(new Error(`the photo ${photoImg.src} did not load`)));
 
     const thumbs = PHOTOS.map((p, i) => {
@@ -719,7 +719,7 @@ try {
 
       const ids = Object.keys(PARTS);
       const count = (s) => ids.filter((id) => id !== 'stand' && timeline.stateOn(id, v) === s).length;
-      dayText.textContent = `${count('restored')} parts rebuilt, ${count('off')} off the bike, ${count('original')} as found.`;
+      dayText.textContent = `${count('restored')} parts back on, ${count('off')} off the bike, ${count('original')} as found.`;
       partsTable.innerHTML = Object.entries(SECTIONS).map(([sid, sname]) => {
         const here = ids.filter((id) => PARTS[id].section === sid);
         return here.length ? `<tr><th colspan="2" align="left">${esc(sname)}</th></tr>` + here.map((id) => {

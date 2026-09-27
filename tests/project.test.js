@@ -56,8 +56,6 @@ test('the rebuild waits for its start date, and riding waits for the roads', () 
     else assert.ok(day >= D.dayOf(D.RESUME), `${id} starts ${r.dateOf(day)}, before work resumes on ${D.RESUME}`);
   }
   assert.ok(first.get('ride.break-in') >= D.dayOf(D.RIDING), `break-in starts ${r.dateOf(first.get('ride.break-in'))}`);
-  assert.ok(first.get('engine.top-end') - r.finish('engine.bore') >= 14,
-    `the top end starts day ${first.get('engine.top-end')}, ${first.get('engine.top-end') - r.finish('engine.bore')} days after the cylinders go to the machine shop`);
 });
 
 test('at the end of the strip-down the bike stands as the last photos show it', () => {
@@ -86,8 +84,9 @@ test('what the rebuild costs is the catalog price of everything bought', () => {
   const expected = n.boughtTools.reduce((t, id) => t + C.TOOLS[id].cost, 0)
     + n.boughtMaterials.reduce((t, m) => t + m.qty * C.MATERIALS[m.id].cost, 0);
   assert.ok(Math.abs(n.cost - expected) < 1e-9);
-  // The parts-sourcing guide puts a full rebuild at roughly $800 to $1,500 in parts.
-  assert.ok(n.cost > 800 && n.cost < 1500, `cost $${n.cost.toFixed(0)}`);
+  // Running and safe costs less than the parts-sourcing guide's full rebuild, about $800 to $1,500,
+  // but the parts that always go on (carb kits, crank seals, gaskets, points, battery, tires) come to over $400.
+  assert.ok(n.cost > 400 && n.cost < 800, `cost $${n.cost.toFixed(0)}`);
   for (const m of n.inputs) assert.equal(C.MATERIALS[m.id].source, 'bought', `${m.id} is not bought`);
 });
 
@@ -99,13 +98,11 @@ test('every spec a procedure quotes is in the spec reference', () => {
   }
 });
 
-test('the frame is empty when its rust is treated', () => {
-  const r = run();
-  const tl = S.partTimeline(r, reg);
-  const start = r.days.find((d) => d.did.some((x) => x.id === 'frame.treat')).day;
-  for (const id of ['front-end', 'front-wheel', 'rear-wheel', 'rear-suspension', 'bottom-end', 'gearbox', 'wiring', 'charging', 'tank', 'seat']) {
-    assert.equal(tl.stateOn(id, start - 1), 'off', `${id} is on the frame when frame.treat starts on ${r.dateOf(start)}`);
+test('the plan gets the bike running and safe, not new: machining and new pistons wait on a failed check', () => {
+  for (const p of reg.values()) {
+    for (const m of p.requires.materials) assert.ok(!['machine-work', 'pistons-rings'].includes(m.id), `${p.id} always buys ${m.id}`);
   }
+  assert.ok(reg.get('measure.bores').steps.some((s) => /machine shop/.test(s)), 'the bore check sends a scored cylinder to the machine shop');
 });
 
 test('each strip-down job starts after the one before it is finished, so the bike can be seen after every step', () => {

@@ -10,7 +10,6 @@
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
-      { call: 'strip.swingarm' },
       { call: 'rear.suspension' },
     ],
     checks: [

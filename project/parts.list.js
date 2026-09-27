@@ -8,7 +8,6 @@
       'check.voltage',
       'check.autolube',
       'measure.bores',
-      'measure.pistons',
       'measure.crank',
       'carbs.assess',
       'ignition.assess',

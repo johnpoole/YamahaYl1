@@ -1,4 +1,4 @@
-// Measure both bores
+// Check the bores, pistons and rings
 (function (root) {
   'use strict';
   const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
@@ -8,20 +8,22 @@
     kind: 'task',
     window: { from: design.dayOf(design.RESUME) },
     after: ['strip.top-end'],
-    title: 'Measure both bores',
-    purpose: 'Decide between honing and reboring. Backlog B-012.',
-    requires: { tools: ['telescoping-gauges', 'micrometer-large'], materials: [], skills: ['skill.measure'] },
+    title: 'Check the bores, pistons and rings',
+    purpose: 'Decide whether the old pistons and rings go back in, or a cylinder goes to a machine shop.',
+    requires: { tools: ['feeler-gauges'], materials: [], skills: ['skill.measure'] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
-      'Clean each bore.',
-      'Measure at three depths: 10 mm from the top, the middle, and 10 mm from the bottom of ring travel.',
-      'At each depth measure along the crank axis and across it.',
-      'Record all six readings for each bore.',
-      'Compare with the standard bore of {spec.bore} mm: within 0.05 mm hone, beyond that or scored rebore; taper over {spec.taper} mm means rebore.',
+      'Clean each bore and piston.',
+      'Look at each bore and piston skirt in good light. Scoring deep enough to catch a fingernail means that cylinder is out.',
+      'Check both rings on each piston move freely in their grooves, and every ring locating pin is there.',
+      'Slide each ring into its own bore, square it with the piston crown, and measure the end gap with the feeler gauges: {spec.ringGap} mm.',
+      'Measure each ring in its groove with the feeler gauges: {spec.ringGroove} mm.',
+      'If a ring gap or groove clearance is over the limit, put new rings on the parts list.',
+      'If a bore is scored, that cylinder goes to a machine shop to be bored for a new piston and rings: put them and the machining on the parts list.',
     ],
     checks: [
-      'Twelve readings recorded, and a hone or rebore decision for each cylinder.',
+      'Every ring gap and groove clearance recorded, and a reuse or machine decision for each cylinder.',
     ],
     safety: [],
     estimate: { hours: 1.5 },
