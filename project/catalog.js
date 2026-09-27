@@ -39,6 +39,10 @@
 
     'vacuum-gauge': { name: 'Twin vacuum gauge for carb sync', source: 'bought', cost: 45 },
     'spoke-wrench': { name: 'Spoke nipple wrench', source: 'bought', cost: 10 },
+    'micrometer-large': { name: 'Micrometer, 25–50 mm', source: 'bought', cost: 45 },
+    'tire-irons': { name: 'Tire irons and rim protectors', source: 'bought', cost: 25 },
+    'pressure-gauge': { name: 'Tire pressure gauge', source: 'bought', cost: 10 },
+    'dial-adapter': { name: 'Spark plug hole adapter for the dial indicator, M14', source: 'bought', cost: 20 },
   };
 
   const MATERIALS = {

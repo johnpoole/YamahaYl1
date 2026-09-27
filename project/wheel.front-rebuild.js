@@ -8,7 +8,7 @@
     after: ['brakes.measure', 'tires.check', 'parts.order', 'fork.rebuild'],
     title: 'Rebuild and refit the front wheel',
     purpose: 'Bearings, brake and tire, and the wheel back on.',
-    requires: { tools: ['sockets', 'wrenches', 'bearing-drivers', 'spoke-wrench'], materials: [{ id: 'wheel-bearings', qty: 1 }, { id: 'brake-shoes', qty: 1 }, { id: 'tires', qty: 1 }], skills: [] },
+    requires: { tools: ['sockets', 'wrenches', 'bearing-drivers', 'spoke-wrench', 'dial-indicator', 'tire-irons', 'pressure-gauge'], materials: [{ id: 'wheel-bearings', qty: 1 }, { id: 'brake-shoes', qty: 1 }, { id: 'tires', qty: 1 }], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [

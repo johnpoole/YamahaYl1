@@ -10,7 +10,7 @@
     after: ['strip.top-end'],
     title: 'Measure the pistons and rings',
     purpose: 'Check piston fit and ring wear. Backlog B-013.',
-    requires: { tools: ['micrometer', 'feeler-gauges'], materials: [], skills: ['skill.measure'] },
+    requires: { tools: ['micrometer-large', 'feeler-gauges'], materials: [], skills: ['skill.measure'] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [

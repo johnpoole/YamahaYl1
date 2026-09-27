@@ -7,7 +7,7 @@
     after: ['parts.order', 'measure.bores'],
     title: 'Have the cylinders bored or honed',
     purpose: 'Machine the bores to fit the new pistons. Backlog B-031.',
-    requires: { tools: [], materials: [{ id: 'machine-work', qty: 1 }, { id: 'pistons-rings', qty: 1 }], skills: [] },
+    requires: { tools: ['telescoping-gauges', 'micrometer-large'], materials: [{ id: 'machine-work', qty: 1 }, { id: 'pistons-rings', qty: 1 }], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [

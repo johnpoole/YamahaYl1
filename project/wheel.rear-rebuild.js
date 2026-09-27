@@ -8,7 +8,7 @@
     after: ['brakes.measure', 'tires.check', 'parts.order', 'rear.suspension', 'chain.check'],
     title: 'Rebuild and refit the rear wheel and chain',
     purpose: 'Bearings, brake and tire, and the wheel and chain back on.',
-    requires: { tools: ['sockets', 'wrenches', 'bearing-drivers', 'spoke-wrench'], materials: [{ id: 'wheel-bearings', qty: 1 }, { id: 'brake-shoes', qty: 1 }, { id: 'tires', qty: 1 }], skills: [] },
+    requires: { tools: ['sockets', 'wrenches', 'bearing-drivers', 'spoke-wrench', 'dial-indicator', 'tire-irons', 'pressure-gauge'], materials: [{ id: 'wheel-bearings', qty: 1 }, { id: 'brake-shoes', qty: 1 }, { id: 'tires', qty: 1 }], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [

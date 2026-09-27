@@ -180,3 +180,10 @@ test('every job marked done is a job in the plan', () => {
   assert.ok(done.length > 0);
   for (const id of done) assert.equal(reg.get(id) && reg.get(id).kind, 'task', `${id} in project/done.js is not a job`);
 });
+
+test('every tool not owned is needed by some job', () => {
+  for (const [id, t] of Object.entries(C.TOOLS)) {
+    if (t.source !== 'bought') continue;
+    assert.ok([...reg.values()].some((p) => p.requires.tools.includes(id)), `${id} is not owned and no job needs it`);
+  }
+});

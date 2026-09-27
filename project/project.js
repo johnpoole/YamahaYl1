@@ -18,8 +18,11 @@
     intro: 'A 1966 Yamaha YL1 Twin Jet 100, engine {spec.serial}, frame {spec.frameNumber}, from the bike as found to a safe, road-legal machine. The prices are rough. Start from the plan.',
     labels: {
       kitHeading: 'Tools in the shop',
-      kitIntro: 'Already owned. Anything else is bought.',
+      kitIntro: 'Taken as owned: the minimum tool set from the overview guide.',
+      notOwnedHeading: 'Tools not owned',
+      notOwnedIntro: 'Each one has to be bought or borrowed, or the jobs that need it done by a shop.',
       kit: 'owned',
+      boughtTool: 'not owned',
       site: 'on hand',
       carried: 'Shop tools',
       carriedNone: 'No shop tools',

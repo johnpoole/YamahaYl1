@@ -10,7 +10,7 @@
     after: ['strip.top-end'],
     title: 'Measure both bores',
     purpose: 'Decide between honing and reboring. Backlog B-012.',
-    requires: { tools: ['telescoping-gauges', 'micrometer'], materials: [], skills: ['skill.measure'] },
+    requires: { tools: ['telescoping-gauges', 'micrometer-large'], materials: [], skills: ['skill.measure'] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [

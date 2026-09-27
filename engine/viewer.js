@@ -34,7 +34,7 @@
         const x = C.TOOLS[t];
         if (!x) return esc(t);
         if (x.source === 'kit') return `${T(x.name)} <span class="src">(${esc(W.kit)})</span>`;
-        if (x.source === 'bought') return `${T(x.name)} <span class="src">(bought, about ${money(x.cost)})</span>`;
+        if (x.source === 'bought') return `${T(x.name)} <span class="src">(${esc(W.boughtTool || 'bought')}, about ${money(x.cost)})</span>`;
         return `${T(x.name)} <span class="src">(made: ${link(x.source)})</span>`;
       };
       const matName = (m, withQty = true) => {
@@ -71,7 +71,16 @@
           })()}</div>
           <h2>${esc(W.kitHeading)}</h2>
           <p class="sub">${esc(W.kitIntro)}</p>
-          ${ul(C.KIT.map((t) => T(C.TOOLS[t].name)))}`;
+          ${ul(C.KIT.map((t) => T(C.TOOLS[t].name)))}
+          ${(() => {
+            // Tools the plan needs that are not in the kit, each with the jobs that need it.
+            const users = (t) => [...reg.values()].filter((p) => p.requires.tools.includes(t));
+            const bought = Object.keys(C.TOOLS).filter((t) => C.TOOLS[t].source === 'bought');
+            if (!bought.length || !W.notOwnedHeading) return '';
+            return `<h2>${esc(W.notOwnedHeading)}</h2>
+          <p class="sub">${esc(W.notOwnedIntro || '')}</p>
+          ${ul(bought.map((t) => `${T(C.TOOLS[t].name)} <span class="src">(about ${money(C.TOOLS[t].cost)})</span> — ${users(t).map((p) => link(p.id)).join(', ') || 'no job uses it'}`))}`;
+          })()}`;
       }
 
       function renderOne(p) {
