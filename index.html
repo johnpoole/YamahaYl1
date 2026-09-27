@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YL1 Rebuild</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;--bg:#eef0ec;--ink:#1f2a28;--muted:#5b6862;--line:#c9cfc9;--panel:#f7f8f5;--ember:#c2410c;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#151a19;--ink:#dce3df;--muted:#97a39d;--line:#2d3634;--panel:#1c2221;--ember:#ec6a32;}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#151a19;--ink:#dce3df;--muted:#97a39d;--line:#2d3634;--panel:#1c2221;--ember:#ec6a32;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:26px 16px 48px}
+h1,h2{font-family:"Barlow Condensed","Arial Narrow",sans-serif;margin:0;letter-spacing:.01em}
+h1{font-size:2.3rem;font-weight:700;line-height:1.05}
+h2{font-size:1.3rem;font-weight:600}
+.sub{color:var(--muted);margin:8px 0 0;max-width:72ch}
+.hero{display:block;width:100%;max-height:520px;object-fit:cover;border-radius:4px;margin-top:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:18px}
+.card{display:block;border:1px solid var(--line);background:var(--panel);border-radius:4px;padding:14px 16px;color:var(--ink);text-decoration:none}
+.card:hover{border-color:var(--ember)}
+.card p{margin:4px 0 0;color:var(--muted)}
+ul{padding-left:20px}
+a{color:var(--ember)}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<div class="wrap">
+<h1>Yamaha YL1 rebuild</h1>
+<p class="sub">A 1966–1967 Yamaha YL1 Twin Jet 100, engine L1-47603: a 98 cc air-cooled parallel twin two-stroke with rotary valves and Autolube oil injection. Stripped down from November 2024 to January 2025. Assessment and the rebuild start in October 2026.</p>
+<img class="hero" src="media/photos/PXL_20241112_205515274.jpg" alt="The YL1 as found, right side, in a garage doorway.">
+<div class="cards">
+  <a class="card" href="project/"><h2>Instructions</h2><p>Every job from the strip-down to the break-in, with its tools, parts, specs, checks and schedule.</p></a>
+  <a class="card" href="bike/"><h2>Bike</h2><p>The bike in 3D on any day of the rebuild, beside the photo taken nearest that day.</p></a>
+</div>
+<h2 style="margin-top:26px">Reference</h2>
+<ul>
+  <li><a href="docs/YL1_Spec_Reference.md">Spec reference</a>, transcribed from the Intertec manual</li>
+  <li><a href="docs/PRD.md">Requirements and success criteria</a></li>
+  <li><a href="docs/BACKLOG.md">Backlog</a></li>
+  <li>Best practices: <a href="docs/best-practices/00_Overview_and_Safety.md">overview and safety</a>, <a href="docs/best-practices/02_2Stroke_Engine_Rebuild.md">engine</a>, <a href="docs/best-practices/03_Carburetion_and_Fuel.md">carburetion</a>, <a href="docs/best-practices/04_Electrical_6V.md">electrical</a>, <a href="docs/best-practices/05_Frame_Chassis_Wheels.md">chassis</a>, <a href="docs/best-practices/06_Parts_Sourcing.md">parts</a>, <a href="docs/best-practices/07_Break_In_and_Tuning.md">break-in</a></li>
+</ul>
+</div>
+</body>
+</html>

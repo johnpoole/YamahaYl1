@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YL1 Bike</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;--bg:#eef0ec;--ink:#1f2a28;--muted:#5b6862;--line:#c9cfc9;--panel:#f7f8f5;--ember:#c2410c;--danger:#b3261e;--off:#9a4a2a;--new:#2f6f4f;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#151a19;--ink:#dce3df;--muted:#97a39d;--line:#2d3634;--panel:#1c2221;--ember:#ec6a32;--danger:#ef6b62;--off:#e08a62;--new:#7cc4a0;}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#151a19;--ink:#dce3df;--muted:#97a39d;--line:#2d3634;--panel:#1c2221;--ember:#ec6a32;--danger:#ef6b62;--off:#e08a62;--new:#7cc4a0;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1400px;margin:0 auto;padding:22px 16px 40px}
+h1,h2{font-family:"Barlow Condensed","Arial Narrow",sans-serif;margin:0;letter-spacing:.01em}
+h1{font-size:2.1rem;font-weight:700;line-height:1.05}
+h2{font-size:1.2rem;font-weight:600;margin:0 0 6px}
+.sub{color:var(--muted);margin:6px 0 0;max-width:80ch}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:18px;margin-top:16px;align-items:start}
+@media (max-width:1000px){.layout{grid-template-columns:1fr}}
+.panel{border:1px solid var(--line);background:var(--panel);border-radius:4px;min-width:0}
+.viewer{position:relative;height:min(64vh,640px);min-height:340px;overflow:hidden;border-radius:4px 4px 0 0}
+.viewer canvas{display:block}
+.bar{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-top:1px solid var(--line);align-items:center}
+.bar .grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.bar .grp + .grp{margin-left:auto}
+.btn{font:600 .9rem "Barlow Condensed",sans-serif;letter-spacing:.03em;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:5px 10px;border-radius:3px;cursor:pointer}
+.btn:hover{border-color:var(--ember)}
+.btn[aria-pressed="true"]{background:var(--ember);border-color:var(--ember);color:#fff}
+.lbl3d{font:600 12px "Barlow Condensed",sans-serif;letter-spacing:.03em;color:#1f2a28;background:rgba(247,248,245,.9);border:1px solid #c9cfc9;padding:1px 6px;border-radius:2px;white-space:nowrap;pointer-events:none}
+.dayrow{border-top:1px solid var(--line);padding:10px 12px}
+.dayrow label{display:flex;justify-content:space-between;gap:10px;font:600 1rem "Barlow Condensed",sans-serif}
+.dayrow input{width:100%;accent-color:var(--ember);margin:4px 0 2px}
+.dayrow p{margin:2px 0;font-size:.85rem}
+.dayrow .muted{color:var(--muted)}
+.jumps{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.hint{color:var(--muted);font-size:.8rem;padding:0 12px 10px}
+.side section{padding:14px 16px;border-top:1px solid var(--line)}
+.side section:first-child{border-top:0}
+.side ul{margin:4px 0;padding-left:20px}
+.side li{margin:3px 0}
+.photo{margin:0}
+.photo img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:3px;background:var(--line)}
+.photo figcaption{font-size:.85rem;margin-top:6px}
+.photo .muted{color:var(--muted)}
+.thumbs{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:10px}
+.thumbs button{padding:0;border:2px solid transparent;border-radius:3px;background:none;cursor:pointer;aspect-ratio:1}
+.thumbs button[aria-pressed="true"]{border-color:var(--ember)}
+.thumbs img{display:block;width:100%;height:100%;object-fit:cover;border-radius:2px}
+table{width:100%;border-collapse:collapse}
+td{padding:4px 0;border-top:1px solid var(--line);vertical-align:top}
+td:last-child{text-align:right;font-weight:600;padding-left:10px;white-space:nowrap}
+tr:first-child td{border-top:0}
+.st-original{color:var(--muted)}
+.st-off{color:var(--off)}
+.st-restored{color:var(--new)}
+a{color:var(--ember)}
+#err{display:none;margin-top:12px;padding:10px 14px;border:2px solid var(--danger);color:var(--danger);font-weight:600;white-space:pre-wrap}
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<script src="../nav.js"></script>
+<div class="wrap">
+<h1>Yamaha YL1 Twin Jet 100</h1>
+<p class="sub">Engine L1-47603. Move the slider to see the bike on any day of the rebuild, from the day it was found to the day it is finished. Parts as found are dull and rusty. Parts that are off the bike are hidden. Rebuilt parts are clean.</p>
+<div id="err" role="alert"></div>
+
+<div class="layout">
+<div class="panel">
+  <div class="viewer" id="viewer"></div>
+  <div class="bar">
+    <div class="grp" id="views"></div>
+    <div class="grp" id="toggles"></div>
+  </div>
+  <div class="dayrow">
+    <label for="day"><span>The bike on</span><output id="daydate">Loading the schedule…</output></label>
+    <input type="range" id="day" min="0" max="1" step="1" value="1" disabled>
+    <p id="daytext" class="muted"></p>
+    <div class="jumps" id="jumps"></div>
+  </div>
+  <div class="hint">Drag to turn. Scroll or pinch to zoom. Right-drag to move.</div>
+</div>
+
+<div class="panel side">
+  <section>
+    <h2>Photo</h2>
+    <figure class="photo">
+      <img id="photo" alt="">
+      <figcaption><span id="photocap"></span> <span id="photodate" class="muted"></span></figcaption>
+    </figure>
+    <div class="thumbs" id="thumbs"></div>
+  </section>
+  <section>
+    <h2>On this day</h2>
+    <ul id="jobs"></ul>
+  </section>
+  <section>
+    <h2>Parts</h2>
+    <table id="parts"></table>
+  </section>
+</div>
+</div>
+</div>
+<script src="../engine/lib.js"></script>
+<script src="../engine/load.js"></script>
+<script src="../engine/schedule.js"></script>
+<script src="../engine/catalog.js"></script>
+<script src="../project/design.js"></script>
+<script src="../project/catalog.js"></script>
+<script src="../project/index.js"></script>
+<script src="../project/project.js"></script>
+<script src="../media/photos.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const errBox = document.getElementById('err');
+function showError(e) {
+  errBox.style.display = 'block';
+  errBox.textContent = `The bike view stopped: ${e.message}`;
+  console.error(e);
+}
+window.addEventListener('error', (e) => showError(e.error || new Error(e.message)));
+
+try {
+  const Dz = window.YL1Design, PHOTOS = window.YL1Photos;
+  if (!Dz) throw new Error('../project/design.js did not load: YL1Design is missing.');
+  if (!PHOTOS) throw new Error('../media/photos.js did not load: YL1Photos is missing.');
+  const PARTS = Dz.PARTS;
+
+  // ---------- scene ----------
+  const host = document.getElementById('viewer');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  host.appendChild(renderer.domElement);
+  const labelRenderer = new CSS2DRenderer();
+  labelRenderer.domElement.style.position = 'absolute';
+  labelRenderer.domElement.style.inset = '0';
+  labelRenderer.domElement.style.pointerEvents = 'none';
+  host.appendChild(labelRenderer.domElement);
+
+  const scene = new THREE.Scene();
+  {
+    const c = document.createElement('canvas');
+    c.width = 2; c.height = 256;
+    const ctx = c.getContext('2d');
+    const grad = ctx.createLinearGradient(0, 0, 0, 256);
+    grad.addColorStop(0, '#b9c0c2');
+    grad.addColorStop(0.6, '#d9dcd8');
+    grad.addColorStop(1, '#e6e5df');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 2, 256);
+    const bg = new THREE.CanvasTexture(c);
+    bg.colorSpace = THREE.SRGBColorSpace;
+    scene.background = bg;
+  }
+  // Reflections for chrome and paint come from a plain room.
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.55;
+
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.02, 60);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.maxPolarAngle = Math.PI * 0.49;
+  controls.minDistance = 0.4;
+  controls.maxDistance = 8;
+
+  scene.add(new THREE.HemisphereLight(0xf2f4f7, 0x6a6258, 0.9));
+  const sun = new THREE.DirectionalLight(0xfff4e6, 2.0);
+  sun.position.set(1.5, 4, 2.5);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left: -1.6, right: 1.6, top: 1.6, bottom: -1.6, near: 0.5, far: 10 });
+  sun.shadow.bias = -0.0004;
+  scene.add(sun);
+
+  // Garage floor: concrete with a little variation in tone.
+  {
+    const g = new THREE.PlaneGeometry(8, 8, 64, 64);
+    g.rotateX(-Math.PI / 2);
+    const col = [], p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), z = p.getZ(i);
+      const n = 0.5 + 0.25 * Math.sin(x * 3.1 + Math.cos(z * 2.3)) * Math.cos(z * 2.7 - x) + 0.08 * Math.sin(x * 17 + z * 13);
+      const t = 0.58 + 0.08 * n;
+      col.push(t, t * 0.985, t * 0.95);
+    }
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    const floor = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95 }));
+    floor.receiveShadow = true;
+    scene.add(floor);
+  }
+
+  // ---------- materials ----------
+  // Every material comes in two finishes: as found and rebuilt. Each mesh keeps the name of its
+  // material, and the day slider swaps the finish on each part.
+  function grime(base, spot, amount, seed) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 256;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, 256, 256);
+    let s = seed;
+    const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < amount; i++) {
+      const x = rnd() * 256, y = rnd() * 256, r = 0.8 + rnd() * rnd() * 7;
+      ctx.globalAlpha = 0.15 + rnd() * 0.35;
+      ctx.fillStyle = spot[Math.floor(rnd() * spot.length)];
+      ctx.beginPath();
+      ctx.ellipse(x, y, r, r * (0.5 + rnd()), rnd() * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(2, 2);
+    return t;
+  }
+  const RUST = ['#6e4128', '#80502f', '#5a3a26', '#8a6040'];
+  const std = (o) => new THREE.MeshStandardMaterial(o);
+  const FINISH = {
+    rebuilt: {
+      silver: std({ color: 0xc3c7cc, metalness: 0.55, roughness: 0.32 }),
+      black: std({ color: 0x151618, metalness: 0.2, roughness: 0.28 }),
+      chrome: std({ color: 0xffffff, metalness: 1, roughness: 0.07 }),
+      alloy: std({ color: 0xd6d8d9, metalness: 0.65, roughness: 0.32 }),
+      fins: std({ color: 0x2b2c2e, metalness: 0.3, roughness: 0.55 }),
+      rubber: std({ color: 0x1b1b1b, roughness: 0.85 }),
+      vinyl: std({ color: 0x141414, roughness: 0.45 }),
+      steel: std({ color: 0x8b8f93, metalness: 0.7, roughness: 0.4 }),
+      plate: std({ color: 0x6d6a62, metalness: 0.4, roughness: 0.6 }),
+      battery: std({ color: 0x202226, roughness: 0.5 }),
+      wire: std({ color: 0x1d1d1d, roughness: 0.6 }),
+      lens: std({ color: 0xf4f1e6, metalness: 0.1, roughness: 0.05, emissive: 0x222018 }),
+      spoke: new THREE.LineBasicMaterial({ color: 0xdcdfe2 }),
+    },
+    found: {
+      silver: std({ map: grime('#a9aaa7', ['#6e6a60', '#8c8779', ...RUST], 900, 11), metalness: 0.25, roughness: 0.75 }),
+      black: std({ map: grime('#23211f', ['#3b342c', ...RUST], 1100, 23), metalness: 0.05, roughness: 0.85 }),
+      chrome: std({ map: grime('#aaa69c', ['#7a7568', ...RUST], 700, 37), metalness: 0.75, roughness: 0.42 }),
+      alloy: std({ map: grime('#a39f94', ['#7b766a', '#8f887a', '#6a5f4c'], 1000, 41), metalness: 0.3, roughness: 0.8 }),
+      fins: std({ map: grime('#3a3733', ['#55504a', '#6a5f4c', '#2a2826'], 600, 53), roughness: 0.95 }),
+      rubber: std({ color: 0x3a3835, roughness: 1 }),
+      vinyl: std({ map: grime('#2e2a26', ['#4a4238', '#3a342d'], 500, 67), roughness: 0.9 }),
+      steel: std({ color: 0x8b8f93, metalness: 0.7, roughness: 0.4 }),
+      plate: std({ map: grime('#6a655a', ['#4a4238', ...RUST], 700, 71), metalness: 0.2, roughness: 0.8 }),
+      battery: std({ color: 0x3a3a36, roughness: 0.8 }),
+      wire: std({ color: 0x2d2a26, roughness: 0.9 }),
+      lens: std({ color: 0xcfc8b4, metalness: 0.1, roughness: 0.4 }),
+      spoke: new THREE.LineBasicMaterial({ color: 0x8b8173 }),
+    },
+  };
+  for (const set of Object.values(FINISH)) {
+    // Fenders are open shells and show their inside.
+    set.silverShell = set.silver.clone(); set.silverShell.side = THREE.DoubleSide;
+    set.blackShell = set.black.clone(); set.blackShell.side = THREE.DoubleSide;
+    for (const [k, m] of Object.entries(set)) m.userData.key = k;
+  }
+  const M = FINISH.rebuilt;
+
+  // ---------- drawing helpers ----------
+  // x runs forward, y up, z to the bike's right. The ground is y = 0.
+  const bike = new THREE.Group();
+  scene.add(bike);
+  const labels = new THREE.Group();
+  scene.add(labels);
+  let target = bike;
+
+  function add(mesh) {
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    target.add(mesh);
+    return mesh;
+  }
+  function boxAt(material, cx, cy, cz, sx, sy, sz) {
+    const m = add(new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), material));
+    m.position.set(cx, cy, cz);
+    return m;
+  }
+  // A cylinder from point a to point b.
+  function rod(material, a, b, r, r2 = r, seg = 16) {
+    const va = new THREE.Vector3(...a), vb = new THREE.Vector3(...b);
+    const m = add(new THREE.Mesh(new THREE.CylinderGeometry(r2, r, va.distanceTo(vb), seg), material));
+    m.position.copy(va).add(vb).multiplyScalar(0.5);
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vb.clone().sub(va).normalize());
+    return m;
+  }
+  // A smooth bent tube through the points.
+  function tube(material, pts, r, closed = false) {
+    const curve = new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(...p)), closed, 'centripetal');
+    return add(new THREE.Mesh(new THREE.TubeGeometry(curve, pts.length * 12, r, 10, closed), material));
+  }
+  // A flat outline in the x–y plane, given thickness across the bike and centred on z.
+  function slab(material, outline, depth, z, bevel = 0.008) {
+    const s = new THREE.Shape(outline.map(([x, y]) => new THREE.Vector2(x, y)));
+    const g = new THREE.ExtrudeGeometry(s, { depth: depth - 2 * bevel, bevelEnabled: bevel > 0, bevelSize: bevel, bevelThickness: bevel, bevelSegments: 3, curveSegments: 16 });
+    g.translate(0, 0, z - (depth - 2 * bevel) / 2);
+    return add(new THREE.Mesh(g, material));
+  }
+  function disc(material, cx, cy, cz, r, w) {
+    const m = add(new THREE.Mesh(new THREE.CylinderGeometry(r, r, w, 36), material));
+    m.rotation.x = Math.PI / 2;
+    m.position.set(cx, cy, cz);
+    return m;
+  }
+  const partLabels = new Map();
+  // Labels ride with the bike, except the stand's.
+  function label(part, text, x, y, z) {
+    const el = document.createElement('div');
+    el.className = 'lbl3d';
+    el.textContent = text;
+    const o = new CSS2DObject(el);
+    o.position.set(x, y, z);
+    (part === 'stand' ? labels : bike).add(o);
+    partLabels.set(part, [...(partLabels.get(part) || []), o]);
+  }
+
+  // Everything drawn between beginPart(id) and endPart() belongs to that part of the bike.
+  const partObjs = new Map();
+  let partOpen = null, partBefore = null;
+  function beginPart(id) {
+    if (partOpen) throw new Error(`3D view: part "${partOpen}" is still open when "${id}" begins`);
+    if (!(id in PARTS)) throw new Error(`3D view: "${id}" is not a part in project/design.js`);
+    partOpen = id;
+    partBefore = new Set();
+    scene.traverse((o) => partBefore.add(o));
+  }
+  function endPart() {
+    const added = [];
+    scene.traverse((o) => { if (!partBefore.has(o) && partBefore.has(o.parent)) added.push(o); });
+    if (!added.length) throw new Error(`3D view: part "${partOpen}" drew nothing`);
+    partObjs.set(partOpen, [...(partObjs.get(partOpen) || []), ...added]);
+    partOpen = null;
+  }
+
+  // ---------- the bike ----------
+  const WR = 0.28;                         // 2.50 × 17 tire, outside radius
+  const FA = [0.60, WR], RA = [-0.58, WR]; // axles
+  const rake = 27 * Math.PI / 180;
+  const up = [-Math.sin(rake), Math.cos(rake)], fwd = [Math.cos(rake), Math.sin(rake)];
+  const onFork = (t, out = 0) => [FA[0] + up[0] * t + fwd[0] * out, FA[1] + up[1] * t + fwd[1] * out];
+  const head0 = onFork(0.47), head1 = onFork(0.62);
+  const pivot = [-0.19, 0.40];
+  const CYL = [0.075, -0.075];             // the two cylinders across the bike
+
+  function wheel(ax, ay, rear) {
+    const tire = add(new THREE.Mesh(new THREE.TorusGeometry(WR - 0.036, 0.036, 16, 64), M.rubber));
+    tire.position.set(ax, ay, 0);
+    const rim = add(new THREE.Mesh(new THREE.TorusGeometry(WR - 0.066, 0.009, 8, 64), M.chrome));
+    rim.position.set(ax, ay, 0);
+    rim.scale.z = 2.2;
+    disc(M.alloy, ax, ay, 0, 0.068, 0.085);
+    disc(M.alloy, ax, ay, rear ? 0.05 : -0.05, 0.075, 0.02);   // brake drum side
+    rod(M.steel, [ax, ay, -0.075], [ax, ay, 0.075], 0.008);   // axle ends
+    const pts = [];
+    for (let i = 0; i < 36; i++) {
+      const a = (i / 36) * Math.PI * 2, b = a + (i % 2 ? 0.35 : -0.35);
+      const side = i % 2 ? 0.035 : -0.035;
+      pts.push(ax + Math.cos(a) * 0.05, ay + Math.sin(a) * 0.05, side, ax + Math.cos(b) * (WR - 0.07), ay + Math.sin(b) * (WR - 0.07), 0);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    target.add(new THREE.LineSegments(g, M.spoke));
+  }
+
+  beginPart('front-wheel');
+  wheel(FA[0], FA[1], false);
+  endPart();
+  label('front-wheel', 'Front wheel', FA[0], FA[1] - 0.1, 0.12);
+
+  beginPart('rear-wheel');
+  wheel(RA[0], RA[1], true);
+  {
+    // Sprockets and chain on the left.
+    const cz = -0.085, fs = [-0.07, 0.31], fr = 0.035, rr = 0.085;
+    disc(M.steel, RA[0], RA[1], cz, rr, 0.006);
+    disc(M.steel, fs[0], fs[1], cz, fr, 0.006);
+    const loop = [];
+    for (let i = 0; i <= 10; i++) { const a = Math.PI / 2 + (i / 10) * Math.PI; loop.push([RA[0] + Math.cos(a) * (rr + 0.005), RA[1] + Math.sin(a) * (rr + 0.005), cz]); }
+    for (let i = 0; i <= 8; i++) { const a = -Math.PI / 2 + (i / 8) * Math.PI; loop.push([fs[0] + Math.cos(a) * (fr + 0.005), fs[1] + Math.sin(a) * (fr + 0.005), cz]); }
+    tube(M.steel, loop, 0.005, true);
+  }
+  endPart();
+  label('rear-wheel', 'Rear wheel and chain', RA[0], RA[1] - 0.1, -0.14);
+
+  beginPart('front-end');
+  for (const z of [-0.07, 0.07]) {
+    rod(M.chrome, [...onFork(0.02), z], [...onFork(0.30), z], 0.017);          // slider
+    rod(M.rubber, [...onFork(0.30), z], [...onFork(0.44), z], 0.021, 0.019);  // gaiter
+    rod(M.chrome, [...onFork(0.44), z], [...onFork(0.64), z], 0.015);          // stanchion
+  }
+  for (const t of [0.47, 0.62]) rod(M.black, [...onFork(t, -0.02), -0.09], [...onFork(t, -0.02), 0.09], 0.016);   // yokes
+  // High bars with grips.
+  for (const s of [-1, 1]) {
+    tube(M.chrome, [[...onFork(0.66), 0], [head1[0] - 0.02, head1[1] + 0.08, s * 0.06], [head1[0] - 0.08, head1[1] + 0.17, s * 0.22], [head1[0] - 0.19, head1[1] + 0.20, s * 0.30]], 0.011);
+    rod(M.rubber, [head1[0] - 0.19, head1[1] + 0.20, s * 0.30], [head1[0] - 0.22, head1[1] + 0.205, s * 0.39], 0.016);
+  }
+  {
+    // Front fender, silver, over the top of the wheel.
+    const f = add(new THREE.Mesh(new THREE.CylinderGeometry(WR + 0.035, WR + 0.035, 0.1, 40, 1, true, Math.PI * 0.6, Math.PI * 0.9), M.silverShell));
+    f.rotation.x = Math.PI / 2;
+    f.position.set(FA[0], FA[1], 0);
+  }
+  endPart();
+  label('front-end', 'Forks and bars', ...onFork(0.36, 0.05), 0.12);
+
+  beginPart('headlight');
+  {
+    const c = onFork(0.56, 0.10);
+    const shell = add(new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.07, 0.13, 32), M.silver));
+    shell.rotation.z = Math.PI / 2;
+    shell.position.set(c[0], c[1], 0);
+    const rim = add(new THREE.Mesh(new THREE.TorusGeometry(0.083, 0.008, 10, 40), M.chrome));
+    rim.rotation.y = Math.PI / 2;
+    rim.position.set(c[0] + 0.066, c[1], 0);
+    const lens = add(new THREE.Mesh(new THREE.CircleGeometry(0.08, 40), M.lens));
+    lens.rotation.y = Math.PI / 2;
+    lens.position.set(c[0] + 0.064, c[1], 0);
+    // Speedometer on top of the shell.
+    const sp = add(new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.035, 24), M.chrome));
+    sp.position.set(c[0] - 0.02, c[1] + 0.1, 0);
+    sp.rotation.z = 0.5;
+  }
+  endPart();
+  label('headlight', 'Headlight', ...onFork(0.56, 0.2), 0);
+
+  beginPart('frame');
+  // Pressed-steel backbone from the steering head to the rear, seen from the side.
+  slab(M.black, [
+    [head1[0] + 0.03, head1[1] + 0.03], [0.20, 0.83], [-0.05, 0.73], [-0.25, 0.72], [-0.60, 0.76], [-0.74, 0.74],
+    [-0.74, 0.69], [-0.46, 0.66], [-0.27, 0.52], [-0.23, 0.36], [-0.15, 0.36], [-0.08, 0.46], [0.02, 0.55], [0.16, 0.66], [head0[0] - 0.01, head0[1] - 0.02],
+  ], 0.13, 0, 0.012);
+  rod(M.black, [...onFork(0.45, -0.035), 0], [...onFork(0.66, -0.035), 0], 0.03);   // steering head
+  // Rear fender, black, over the rear wheel.
+  {
+    const f = add(new THREE.Mesh(new THREE.CylinderGeometry(WR + 0.04, WR + 0.04, 0.11, 40, 1, true, Math.PI * 0.75, Math.PI), M.blackShell));
+    f.rotation.x = Math.PI / 2;
+    f.position.set(RA[0], RA[1], 0);
+  }
+  // Footrests on a bar under the engine.
+  rod(M.black, [0.0, 0.25, -0.24], [0.0, 0.25, 0.24], 0.012);
+  for (const s of [-1, 1]) rod(M.rubber, [0.0, 0.25, s * 0.18], [0.0, 0.25, s * 0.27], 0.02);
+  endPart();
+  label('frame', 'Frame', -0.4, 0.78, 0.1);
+
+  beginPart('rear-suspension');
+  for (const z of [-0.1, 0.1]) {
+    const w = add(new THREE.Mesh(new THREE.BoxGeometry(Math.hypot(RA[0] - pivot[0], RA[1] - pivot[1]) + 0.04, 0.04, 0.022), M.black));
+    w.position.set((RA[0] + pivot[0]) / 2, (RA[1] + pivot[1]) / 2, z);
+    w.rotation.z = Math.atan2(RA[1] - pivot[1], RA[0] - pivot[0]);
+    // Shock with its spring showing.
+    const lo = [-0.52, 0.31, z * 1.15], hi = [-0.58, 0.73, z * 1.15];
+    rod(M.chrome, lo, hi, 0.013);
+    rod(M.black, [lo[0] - 0.012, lo[1] + 0.21, lo[2]], hi, 0.026);
+    const coil = [];
+    for (let i = 0; i <= 100; i++) {
+      const t = i / 100, a = t * Math.PI * 2 * 9;
+      coil.push([lo[0] + (hi[0] - lo[0]) * (0.08 + t * 0.55) + Math.cos(a) * 0.022, lo[1] + (hi[1] - lo[1]) * (0.08 + t * 0.55), lo[2] + Math.sin(a) * 0.022]);
+    }
+    tube(M.chrome, coil, 0.0035);
+  }
+  rod(M.steel, [pivot[0], pivot[1], -0.12], [pivot[0], pivot[1], 0.12], 0.012);
+  endPart();
+  label('rear-suspension', 'Swingarm and shocks', -0.5, 0.52, 0.16);
+
+  beginPart('engine');
+  // Crankcase and gearbox in one casting, and the outer covers.
+  const caseOutline = [[-0.15, 0.36], [-0.12, 0.25], [-0.02, 0.2], [0.18, 0.2], [0.27, 0.26], [0.29, 0.36], [0.24, 0.45], [0.10, 0.47], [-0.04, 0.45], [-0.12, 0.42]];
+  slab(M.alloy, caseOutline, 0.22, 0, 0.02);
+  disc(M.alloy, -0.02, 0.32, 0.12, 0.085, 0.03);                // clutch cover, right
+  disc(M.plate, 0.14, 0.35, -0.115, 0.075, 0.015);              // points plate, left, under the magneto cover
+  for (const z of CYL) {                                         // pistons, seen when the cylinders are off
+    const p = add(new THREE.Mesh(new THREE.CylinderGeometry(0.019, 0.019, 0.05, 20), M.alloy));
+    p.position.set(0.19, 0.49, z);
+    p.rotation.z = 15 * Math.PI / 180;
+  }
+  // Kickstart on the right, gear pedal on the left.
+  tube(M.chrome, [[-0.06, 0.34, 0.14], [-0.12, 0.31, 0.165], [-0.24, 0.30, 0.175]], 0.009);
+  tube(M.steel, [[0.08, 0.30, -0.13], [0.10, 0.26, -0.18], [0.22, 0.26, -0.2]], 0.008);
+  endPart();
+  label('engine', 'Engine cases', 0.02, 0.24, 0.16);
+
+  beginPart('top-end');
+  // Two cylinders leaning forward, each with a finned barrel and a finned head.
+  for (const z of CYL) {
+    const g = new THREE.Group();
+    g.position.set(0.19, 0.46, z);
+    g.rotation.z = -15 * Math.PI / 180;
+    target.add(g);
+    const was = target; target = g;
+    const barrel = add(new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.15, 20), M.fins));
+    barrel.position.y = 0.075;
+    for (let i = 0; i < 9; i++) boxAt(M.fins, 0, 0.012 + i * 0.016, 0, 0.12, 0.006, 0.105);
+    for (let i = 0; i < 5; i++) boxAt(M.fins, 0, 0.16 + i * 0.013, 0, 0.13 - i * 0.008, 0.007, 0.12);
+    boxAt(M.alloy, 0, 0.165, 0, 0.1, 0.03, 0.09);
+    rod(M.steel, [0, 0.22, 0], [0, 0.245, 0], 0.008);           // plug
+    rod(M.black, [0, 0.245, 0], [-0.03, 0.27, 0], 0.006);       // plug cap and lead
+    target = was;
+  }
+  endPart();
+  label('top-end', 'Cylinders and heads', 0.26, 0.72, 0.1);
+
+  beginPart('magneto-cover');
+  {
+    const m = disc(M.alloy, 0.14, 0.35, -0.13, 0.085, 0.03);
+    m.scale.set(1, 1, 1.05);
+  }
+  endPart();
+  label('magneto-cover', 'Magneto cover', 0.14, 0.35, -0.2);
+
+  beginPart('carbs');
+  // One carburetor on each side of the crankcase, behind the cylinders.
+  for (const s of [-1, 1]) {
+    const x = 0.04, y = 0.47, z = s * 0.14;
+    rod(M.alloy, [x, y, s * 0.1], [x, y, s * 0.17], 0.022);
+    rod(M.alloy, [x, y - 0.06, z], [x, y - 0.02, z], 0.026);     // float bowl
+    rod(M.alloy, [x, y + 0.01, z], [x, y + 0.06, z], 0.018);     // top
+    rod(M.black, [x, y + 0.06, z], [x - 0.06, y + 0.2, z * 0.6], 0.004); // cable
+  }
+  endPart();
+  label('carbs', 'Carburetors', 0.04, 0.56, -0.2);
+
+  beginPart('exhaust');
+  for (const z of CYL) {
+    const out = z > 0 ? 1 : -1;
+    const port = [0.19 + 0.05, 0.48, z];
+    tube(M.chrome, [port, [0.3, 0.44, z], [0.33, 0.34, z * 1.3], [0.28, 0.2, out * 0.13], [0.15, 0.16, out * 0.16], [-0.12, 0.17, out * 0.17], [-0.22, 0.19, out * 0.17]], 0.019);
+    // Low muffler running back past the rear axle.
+    const a = [-0.2, 0.19, out * 0.17], b = [-0.76, 0.27, out * 0.17];
+    rod(M.chrome, a, b, 0.036, 0.036, 24);
+    rod(M.chrome, b, [-0.82, 0.28, out * 0.17], 0.036, 0.018, 24);
+    rod(M.chrome, a, [-0.16, 0.185, out * 0.17], 0.036, 0.02, 24);
+  }
+  endPart();
+  label('exhaust', 'Exhaust', -0.5, 0.24, 0.25);
+
+  beginPart('electrics');
+  boxAt(M.battery, -0.30, 0.58, 0.02, 0.1, 0.11, 0.07);
+  boxAt(M.black, -0.18, 0.56, 0.02, 0.05, 0.04, 0.04);          // rectifier
+  tube(M.wire, [[-0.30, 0.64, 0.02], [-0.12, 0.66, 0.05], [0.10, 0.74, 0.07], [0.30, 0.82, 0.06], [...onFork(0.56, 0.02), 0.03]], 0.006);
+  endPart();
+  label('electrics', 'Battery and wiring', -0.3, 0.52, 0.1);
+
+  beginPart('tank');
+  {
+    const t = add(new THREE.Mesh(new THREE.SphereGeometry(1, 40, 24), M.silver));
+    t.scale.set(0.21, 0.085, 0.125);
+    t.position.set(0.12, 0.83, 0);
+    t.rotation.z = -0.28;
+    for (const s of [-1, 1]) {
+      const pad = add(new THREE.Mesh(new THREE.SphereGeometry(1, 24, 12), M.chrome));
+      pad.scale.set(0.07, 0.035, 0.01);
+      pad.position.set(0.05, 0.83, s * 0.118);
+      pad.rotation.z = -0.28;
+    }
+    disc(M.chrome, 0.16, 0.9, 0, 0.028, 0.02).rotation.set(0, 0, -0.28);
+  }
+  endPart();
+  label('tank', 'Fuel tank', 0.12, 0.95, 0);
+
+  beginPart('seat');
+  {
+    const s = add(new THREE.Mesh(new THREE.CapsuleGeometry(0.075, 0.38, 8, 20), M.vinyl));
+    s.rotation.z = Math.PI / 2 + 0.05;
+    s.scale.set(0.55, 1, 1.05);
+    s.position.set(-0.36, 0.8, 0);
+  }
+  endPart();
+  label('seat', 'Seat', -0.36, 0.9, 0);
+
+  beginPart('side-covers');
+  for (const s of [-1, 1]) slab(M.silver, [[-0.36, 0.72], [-0.12, 0.72], [-0.16, 0.56], [-0.30, 0.52], [-0.38, 0.6]], 0.012, s * 0.085, 0.004);
+  endPart();
+  label('side-covers', 'Side covers', -0.25, 0.62, 0.12);
+
+  // The work stand stands on the floor. The bike rides up on its table, and two posts hold the
+  // frame by a bar through the swingarm pivot, so the frame stays up once the engine is out.
+  const LIFT = 0.12;
+  target = scene;
+  beginPart('stand');
+  {
+    const top = 0.2 + LIFT - 0.005;
+    boxAt(M.steel, 0.05, top - 0.01, 0, 0.36, 0.02, 0.16);
+    boxAt(M.steel, 0.02, 0.01, 0, 0.56, 0.02, 0.52);
+    for (const z of [-0.235, 0.235]) rod(M.steel, [pivot[0], 0.02, z], [pivot[0], pivot[1] + LIFT, z], 0.013);
+    rod(M.steel, [pivot[0], pivot[1] + LIFT, -0.25], [pivot[0], pivot[1] + LIFT, 0.25], 0.01);
+    for (const z of [-0.07, 0.07]) {
+      rod(M.steel, [-0.15, 0.02, z], [0.22, top - 0.02, z], 0.012);
+      rod(M.steel, [0.25, 0.02, z], [-0.1, top - 0.02, z], 0.012);
+    }
+  }
+  endPart();
+  target = bike;
+  label('stand', 'Work stand', 0.05, 0.1, 0.18);
+
+  for (const id of Object.keys(PARTS)) if (!partObjs.has(id)) throw new Error(`3D view: the part "${id}" in project/design.js is not drawn`);
+
+  // ---------- part states ----------
+  function setFinish(objs, finish) {
+    for (const o of objs) o.traverse((m) => {
+      if (!m.material) return;
+      const key = m.material.userData.key;
+      if (!key) throw new Error(`3D view: a mesh has a material with no finish key`);
+      m.material = FINISH[finish][key];
+    });
+  }
+  function showStates(stateOf) {
+    for (const [id, objs] of partObjs) {
+      const s = stateOf(id);
+      const on = id === 'stand' ? s === 'restored' : s !== 'off';
+      for (const o of objs) o.visible = on;
+      for (const l of partLabels.get(id) || []) l.visible = on;
+      if (on) setFinish(objs, s === 'restored' ? 'rebuilt' : 'found');
+    }
+    bike.position.y = stateOf('stand') === 'restored' ? LIFT : 0;
+  }
+
+  // ---------- views and toggles ----------
+  const VIEWS = {
+    'Right side': [[0.1, 0.62, 2.6], [0.0, 0.5, 0]],
+    'Left side': [[0.1, 0.62, -2.6], [0.0, 0.5, 0]],
+    'Three-quarter': [[1.9, 1.2, 1.7], [0.0, 0.45, 0]],
+    'Engine': [[0.55, 0.62, 0.95], [0.1, 0.4, 0]],
+    'From above': [[0.0, 2.9, 0.05], [0.0, 0.4, 0]],
+  };
+  let fly = null;
+  function go(name) {
+    const [p, t] = VIEWS[name];
+    fly = { p0: camera.position.clone(), t0: controls.target.clone(), p1: new THREE.Vector3(...p), t1: new THREE.Vector3(...t), k: 0 };
+  }
+  const vbox = document.getElementById('views');
+  for (const name of Object.keys(VIEWS)) {
+    const b = document.createElement('button');
+    b.className = 'btn'; b.textContent = name;
+    b.addEventListener('click', () => go(name));
+    vbox.appendChild(b);
+  }
+  {
+    const b = document.createElement('button');
+    b.className = 'btn'; b.textContent = 'Labels';
+    const set = (on) => { b.setAttribute('aria-pressed', String(on)); labelRenderer.domElement.style.display = on ? '' : 'none'; };
+    b.addEventListener('click', () => set(b.getAttribute('aria-pressed') !== 'true'));
+    document.getElementById('toggles').appendChild(b);
+    set(true);
+  }
+
+  // ---------- the bike by day ----------
+  // Runs the rebuild schedule. Each part is as found until a job takes it off, and rebuilt once
+  // the job that puts it back on is finished.
+  {
+    const dayInput = document.getElementById('day'), dayDate = document.getElementById('daydate'), dayText = document.getElementById('daytext');
+    const photoImg = document.getElementById('photo'), photoCap = document.getElementById('photocap'), photoDate = document.getElementById('photodate');
+    const jobsList = document.getElementById('jobs'), partsTable = document.getElementById('parts');
+    const longDate = (iso) => new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const STATE = { original: 'As found', off: 'Off the bike', restored: 'Rebuilt' };
+    const photoDays = PHOTOS.map((p) => Dz.dayOf(p.date));
+    photoImg.addEventListener('error', () => showError(new Error(`the photo ${photoImg.src} did not load`)));
+
+    const thumbs = PHOTOS.map((p, i) => {
+      const b = document.createElement('button');
+      b.title = `${longDate(p.date)}: ${p.caption}`;
+      b.innerHTML = `<img src="../media/photos/${esc(p.file)}" alt="" loading="lazy">`;
+      b.querySelector('img').addEventListener('error', () => showError(new Error(`the photo media/photos/${p.file} did not load`)));
+      b.addEventListener('click', () => { photoPick = i; dayInput.value = String(photoDays[i]); applyDay(photoDays[i]); });
+      document.getElementById('thumbs').appendChild(b);
+      return b;
+    });
+    let photoPick = null;
+
+    let result = null, timeline = null, reg = null;
+    function applyDay(v) {
+      showStates((id) => timeline.stateOn(id, v));
+      dayDate.textContent = `Day ${v} · ${longDate(result.dateOf(v))}`;
+
+      // The photo taken that day, or the last one before it.
+      let pi = photoPick !== null && photoDays[photoPick] === v ? photoPick : photoDays.reduce((best, d, i) => (d <= v ? i : best), 0);
+      photoPick = null;
+      const p = PHOTOS[pi];
+      photoImg.src = `../media/photos/${p.file}`;
+      photoImg.alt = p.caption;
+      photoCap.textContent = p.caption;
+      photoDate.textContent = photoDays[pi] === v ? longDate(p.date) : `Latest photo, ${longDate(p.date)}`;
+      thumbs.forEach((b, i) => b.setAttribute('aria-pressed', String(i === pi)));
+
+      const day = result.days[v];
+      const did = day.did.filter((x) => reg.get(x.id).kind !== 'plan');
+      jobsList.innerHTML = did.length
+        ? did.map((x) => `<li><a href="../project/#${esc(x.id)}">${esc(reg.get(x.id).title)}</a>, ${x.hours.toFixed(1)} h${result.done[result.jobs.findIndex((j) => j.id === x.id)] === v ? ', finished' : ''}</li>`).join('')
+        : '<li>No work on this day.</li>';
+
+      const ids = Object.keys(PARTS);
+      const count = (s) => ids.filter((id) => id !== 'stand' && timeline.stateOn(id, v) === s).length;
+      dayText.textContent = `${count('restored')} parts rebuilt, ${count('off')} off the bike, ${count('original')} as found.`;
+      partsTable.innerHTML = ids.map((id) => {
+        const s = timeline.stateOn(id, v);
+        const text = id === 'stand' ? (s === 'restored' ? 'In use' : 'Not in use') : STATE[s];
+        return `<tr><td>${esc(PARTS[id])}</td><td class="st-${s}">${text}</td></tr>`;
+      }).join('');
+    }
+    dayInput.addEventListener('input', () => applyDay(+dayInput.value));
+
+    const Pj = window.PROJECT, PL = window.ProcLib, PS = window.ProcSchedule;
+    if (!Pj || !PL || !PS || !window.ProcLoad || !window.Catalog || !window.PROCEDURE_IDS) throw new Error('the rebuild schedule scripts did not load');
+    window.ProcLoad.procedures(window.PROCEDURE_IDS, '../project/').then(() => {
+      reg = PL.byId(window.PROCEDURES);
+      result = PS.run(Pj.root, reg, window.Catalog, PL, Pj.calendar);
+      if (result.unfinished.length) throw new Error(`the schedule leaves jobs unfinished: ${result.unfinished.join(', ')}`);
+      timeline = PS.partTimeline(result, reg);
+      const last = Math.max(...result.done);
+      dayInput.max = String(last);
+      dayInput.value = String(last);
+      dayInput.disabled = false;
+
+      const jumps = document.getElementById('jumps');
+      const jump = (text, v) => {
+        const b = document.createElement('button');
+        b.className = 'btn'; b.textContent = text;
+        b.addEventListener('click', () => { dayInput.value = String(v); applyDay(v); });
+        jumps.appendChild(b);
+      };
+      jump('As found', 0);
+      for (const id of Pj.schedule.milestones) jump(reg.get(id).title.replace(/,.*$/, ''), result.finish(id));
+      applyDay(last);
+    }).catch(showError);
+  }
+
+  camera.position.set(...VIEWS['Three-quarter'][0]);
+  controls.target.set(...VIEWS['Three-quarter'][1]);
+
+  function resize() {
+    const w = host.clientWidth, h = host.clientHeight;
+    renderer.setSize(w, h);
+    labelRenderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(host);
+  resize();
+
+  const clock = new THREE.Clock();
+  renderer.setAnimationLoop(() => {
+    const dt = Math.min(0.05, clock.getDelta());
+    if (fly) {
+      fly.k = Math.min(1, fly.k + dt / 1.1);
+      const e = fly.k < 0.5 ? 2 * fly.k * fly.k : 1 - (-2 * fly.k + 2) ** 2 / 2;
+      camera.position.lerpVectors(fly.p0, fly.p1, e);
+      controls.target.lerpVectors(fly.t0, fly.t1, e);
+      if (fly.k >= 1) fly = null;
+    }
+    controls.update();
+    renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
+  });
+} catch (e) {
+  showError(e);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# The service manual and its OCR text stay in the Yamaha_YL1 repo.
+*.pdf
+*_extracted.txt
+.venv/
+__pycache__/
+node_modules/
