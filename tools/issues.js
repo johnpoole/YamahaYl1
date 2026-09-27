@@ -17,6 +17,7 @@ const path = require('node:path');
 const L = require('../engine/lib.js');
 const { load } = require('../project/index.js');
 const project = require('../project/project.js');
+const catalog = require('../project/catalog.js');
 const PHOTOS = require('../media/photos.js');
 
 const LABELS = {
@@ -30,7 +31,24 @@ const marker = (id) => `<!-- plan:${id} -->`;
 const MARKER = /<!-- plan:([a-z0-9.-]+) -->/;
 
 // Every issue the plan calls for, parents before children.
-function desired(reg, base, params) {
+// What a person needs at the bike, from the job file: why, tools, parts, steps, when it is done.
+function jobText(p, cat, params) {
+  const t = (x) => L.render(x, params).replace(/\s*Backlog B-\d+\.?/g, '').trim();
+  const list = (title, items) => (items.length ? `**${title}**\n${items.map((x) => `- ${x}`).join('\n')}\n\n` : '');
+  if (p.status === 'open') return `**Not written yet.** ${t(p.purpose)}\n\n`;
+  const steps = p.steps.map((s, i) => `${i + 1}. ${L.isCall(s) ? t(s.note || s.call) : t(s)}`).join('\n');
+  const tool = (id) => { const x = cat.TOOLS[id]; if (!x) throw new Error(`issues: ${p.id} needs tool ${id}, which the catalog lacks`); return t(x.name); };
+  const mat = (m) => { const x = cat.MATERIALS[m.id]; if (!x) throw new Error(`issues: ${p.id} uses ${m.id}, which the catalog lacks`); return `${t(x.name)}, ${+m.qty.toFixed(2)}${x.unit === 'count' ? '' : ' ' + x.unit}`; };
+  return `${t(p.purpose)}\n\n`
+    + list('Tools', p.requires.tools.map(tool))
+    + list('Parts and supplies', p.requires.materials.map(mat))
+    + `**Steps**\n${steps}\n\n`
+    + list('Done when', p.checks.map(t))
+    + list('Safety', p.safety.map(t))
+    + `About ${+p.estimate.hours.toFixed(2)} h.\n\n`;
+}
+
+function desired(reg, base, params, cat) {
   const callers = new Map();
   for (const p of reg.values()) for (const c of L.callsOf(p)) callers.set(c, [...(callers.get(c) || []), p.id]);
   const done = new Set(PHOTOS.map((x) => x.job));
@@ -44,7 +62,7 @@ function desired(reg, base, params) {
     out.push({
       key: id,
       title: L.render(p.title, params),
-      body: `${L.render(p.purpose, params)}\n\n${base}project/#${id}\n\n${marker(id)}`,
+      body: `${kind === 'job' ? jobText(p, cat, params) : `${L.render(p.purpose, params)}\n\n`}Full page: ${base}project/#${id}\n\n${marker(id)}`,
       labels: kind === 'job' && p.status === 'open' ? ['job', 'open'] : [kind],
       parentKey,
       closedAtCreation: kind === 'job' && done.has(id),
@@ -70,7 +88,7 @@ function main() {
   const base = gh(['api', `repos/${repo}/pages`, '-q', '.html_url']).trim();
   if (!/^https:\/\//.test(base)) throw new Error(`issues: GitHub Pages gave no site URL for ${repo}, got ${JSON.stringify(base)}`);
   const reg = L.byId(load());
-  const want = desired(reg, base, project.params());
+  const want = desired(reg, base, project.params(), catalog);
   let writes = 0;
   const write = (method, url, payload) => { writes++; sleep(1000); return JSON.parse(gh(['api', '-X', method, url, '--input', '-'], payload)); };
 

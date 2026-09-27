@@ -7,7 +7,7 @@ const PHOTOS = require('../media/photos.js');
 const { desired } = require('../tools/issues.js');
 
 const reg = L.byId(load());
-const want = desired(reg, 'https://example.test/YamahaYl1/', project.params());
+const want = desired(reg, 'https://example.test/YamahaYl1/', project.params(), require('../project/catalog.js'));
 const byKey = new Map(want.map((w) => [w.key, w]));
 
 test('every task in the plan is one job issue, and nothing else is', () => {
@@ -54,4 +54,13 @@ test('every job that comes after another is blocked by that job\'s issue', () =>
     n++;
   }
   assert.equal(n, [...reg.values()].reduce((t, p) => t + (p.after || []).length, 0));
+});
+
+test('a job issue carries the steps and when it is done, and no backlog numbers', () => {
+  const w = byKey.get('carbs.rebuild'), p = reg.get('carbs.rebuild');
+  assert.match(w.body, /\*\*Steps\*\*\n1\. /);
+  assert.match(w.body, /\*\*Done when\*\*/);
+  assert.equal((w.body.match(/^\d+\. /gm) || []).length, p.steps.length);
+  for (const x of want) assert.ok(!/Backlog B-\d/.test(x.body), `${x.key} still names a backlog number`);
+  assert.match(byKey.get('tank.find').body, /^\*\*Not written yet\.\*\* /);
 });
