@@ -19,7 +19,7 @@
       'Fit new head gaskets and the heads. Torque the nuts in a crossing pattern to {spec.headTorque}.',
     ],
     checks: [
-      'Both head nuts sets at torque, engine turns over with even compression by hand.',
+      'Both sets of head nuts at torque, and the engine turns over with even compression by hand.',
     ],
     safety: [],
     estimate: { hours: 4 },

@@ -10,7 +10,7 @@
     root: 'plan.yl1',
     pageTitle: 'YL1 Rebuild',
     heading: 'Yamaha YL1 rebuild',
-    intro: 'A 1966–1967 Yamaha YL1 Twin Jet 100, engine {spec.serial}, taken from the bike as found to a safe, road-legal machine. The strip-down sessions are recorded on the days their photos were taken. The rest is the plan from the backlog, milestones M1 to M5. Each job lists the tools, parts and skills it needs. The shop tools are assumed. Parts are bought, and the prices are rough. Start from the plan.',
+    intro: 'A 1966–1967 Yamaha YL1 Twin Jet 100, engine {spec.serial}, from the bike as found to a safe, road-legal machine. The prices are rough. Start from the plan.',
     labels: {
       kitHeading: 'Tools in the shop',
       kitIntro: 'Already owned. Anything else is bought.',
@@ -29,13 +29,15 @@
       start: design.START,
       days: 920,
       hours: { type: 'weekly', hours: [4, 1.5, 1.5, 1.5, 1.5, 1.5, 4] },
+      // Strip-down sessions that ran longer than a weekday evening.
+      dates: { '2025-01-06': 2, '2025-01-07': 3 },
     },
     schedule: {
       pageTitle: 'YL1 Schedule',
       heading: 'Schedule',
       linkText: 'Schedule',
       planLinkText: 'The plan',
-      intro: 'The strip-down sessions on the days they happened, then the plan run day by day from 3 October 2026: four hours on weekend days, an hour and a half on weekday evenings. Riding waits for 1 May 2027. Each job starts only when the parts it needs are in and the jobs it follows are done. Hours are estimates.',
+      intro: 'Work resumes 3 October 2026, four hours on weekend days and an hour and a half on weekday evenings. Riding starts 1 May 2027. Hours are estimates.',
       milestones: ['plan.strip-down', 'plan.m1-assessment', 'plan.m2-engine', 'plan.chassis-electrics', 'plan.m3-first-start', 'plan.m4-break-in', 'plan.m5-complete'],
     },
     parts: () => design.PARTS,

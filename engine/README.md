@@ -29,6 +29,9 @@ Each tool and material in a project's catalog names its `source`:
 - `{ type: 'weekly', hours: [Sun, Mon, … Sat] }` — hours by day of the week
 - `{ type: 'daylight', latitude, overheadHours, maxWorkHours, minWorkHours }` — sunrise to sunset
 
+`calendar.dates`, `{ 'YYYY-MM-DD': hours }`, gives single days their own hours, such as past
+sessions that ran longer than the usual day. Each date must fall inside the calendar.
+
 A job waits for another through something the other makes: a tool, a material, or a state
 such as a settled bed, or through `after`. A job with `estimate.waitDays` holds back the jobs that use what it makes.
 

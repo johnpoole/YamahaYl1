@@ -5,7 +5,7 @@
     id: 'rear.suspension',
     kind: 'task',
     builds: ['rear-suspension'],
-    after: ['strip.wheels'],
+    after: ['strip.swingarm', 'frame.treat'],
     title: 'Service the swingarm and shocks',
     purpose: 'Check the shocks and bushes, and replace the shocks as a pair if they leak.',
     requires: { tools: ['sockets'], materials: [], skills: [] },
@@ -14,8 +14,9 @@
     steps: [
       'Look for oil on each shock shaft.',
       'Check the springs for sag.',
-      'Rock the swingarm to feel for worn pivot bushes.',
+      'Replace worn pivot bushes.',
       'Replace shocks only as a matched pair.',
+      'Refit the swingarm and the shocks to the treated frame.',
     ],
     checks: [
       'No leaking shock, no play in the swingarm pivot.',

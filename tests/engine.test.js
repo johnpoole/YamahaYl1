@@ -122,3 +122,32 @@ test('the part timeline gives each part as found, off and restored in the order 
   const days = tl.events.map((e) => e.day);
   assert.deepEqual(days, [...days].sort((a, b) => a - b));
 });
+
+test('calendar dates give single days their own hours, and a bad date is refused', () => {
+  const cal = { start: '2027-01-04', days: 10, hours: { type: 'fixed', hours: 1.5 }, dates: { '2027-01-05': 4 } };
+  assert.deepEqual([0, 1, 2].map((d) => S.workHours(cal, d).work), [1.5, 4, 1.5]);
+  const reg = fresh().reg;
+  assert.throws(() => S.run(project.root, reg, C, L, { ...cal, dates: { '2027-02-30': 4 } }), /"2027-02-30", which is not a date/);
+  assert.throws(() => S.run(project.root, reg, C, L, { ...cal, dates: { '2026-12-31': 4 } }), /2026-12-31, outside the calendar's 2027-01-04 to 2027-01-13/);
+  assert.throws(() => S.run(project.root, reg, C, L, { ...cal, dates: { '2027-01-05': '4' } }), /calendar\.dates\["2027-01-05"\] must be hours/);
+});
+
+test('the page loader puts the procedures in index order whatever order the files arrive in', async () => {
+  const vm = require('node:vm');
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'engine', 'load.js'), 'utf8');
+  const loadIn = async (ids, arrive) => {
+    const scripts = [];
+    const ctx = { document: { createElement: () => ({}), body: { appendChild: (s) => scripts.push(s) } } };
+    vm.runInNewContext(src, ctx);
+    const done = ctx.ProcLoad.procedures(ids);
+    for (const id of arrive) {
+      (ctx.PROCEDURES = ctx.PROCEDURES || []).push({ id });
+      scripts.find((s) => s.src === `${id}.js`).onload();
+    }
+    await done;
+    return ctx.PROCEDURES.map((p) => p.id);
+  };
+  assert.deepEqual(await loadIn(['a.one', 'b.two', 'c.three'], ['c.three', 'a.one', 'b.two']), ['a.one', 'b.two', 'c.three']);
+});

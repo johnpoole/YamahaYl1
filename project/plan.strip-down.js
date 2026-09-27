@@ -16,11 +16,12 @@
       { call: 'plan.day-2024-12-15' },
       { call: 'plan.day-2024-12-23' },
       { call: 'plan.day-2025-01-06' },
+      { call: 'plan.day-2025-01-07' },
       { call: 'plan.day-2025-01-08' },
       { call: 'plan.day-2025-01-10' },
     ],
     checks: [
-      'The top end is off and the bike is on the stand, as in the photos of 9 January 2025.',
+      'The engine is out with its top end off, and the frame is on the stand, as in the photos of 7 to 9 January 2025.',
     ],
     safety: [],
     estimate: { hours: 0 },

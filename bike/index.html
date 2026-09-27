@@ -69,7 +69,7 @@ a{color:var(--ember)}
 <script src="../nav.js"></script>
 <div class="wrap">
 <h1>Yamaha YL1 Twin Jet 100</h1>
-<p class="sub">Engine L1-47603. Move the slider to see the bike on any day of the rebuild, from the day it was found to the day it is finished. Parts as found are dull and rusty. Parts that are off the bike are hidden. Rebuilt parts are clean.</p>
+<p class="sub">Engine L1-47603. Move the slider to see the bike on any day of work, from the day it was found to the day it is finished. Parts as found are dull and rusty. Parts that are off the bike are hidden. Rebuilt parts are clean.</p>
 <div id="err" role="alert"></div>
 
 <div class="layout">
@@ -652,12 +652,13 @@ try {
     const set = (on) => { b.setAttribute('aria-pressed', String(on)); labelRenderer.domElement.style.display = on ? '' : 'none'; };
     b.addEventListener('click', () => set(b.getAttribute('aria-pressed') !== 'true'));
     document.getElementById('toggles').appendChild(b);
-    set(true);
+    set(false);
   }
 
   // ---------- the bike by day ----------
   // Runs the rebuild schedule. Each part is as found until a job takes it off, and rebuilt once
-  // the job that puts it back on is finished.
+  // the job that puts it back on is finished. The slider steps through the days with work or a
+  // photo, so the months with nothing done between the strip-down and the rebuild take no room.
   {
     const dayInput = document.getElementById('day'), dayDate = document.getElementById('daydate'), dayText = document.getElementById('daytext');
     const photoImg = document.getElementById('photo'), photoCap = document.getElementById('photocap'), photoDate = document.getElementById('photodate');
@@ -673,13 +674,19 @@ try {
       b.title = `${longDate(p.date)}: ${p.caption}`;
       b.innerHTML = `<img src="../media/photos/${esc(p.file)}" alt="" loading="lazy">`;
       b.querySelector('img').addEventListener('error', () => showError(new Error(`the photo media/photos/${p.file} did not load`)));
-      b.addEventListener('click', () => { photoPick = i; dayInput.value = String(photoDays[i]); applyDay(photoDays[i]); });
+      b.addEventListener('click', () => { photoPick = i; show(photoDays[i]); });
       document.getElementById('thumbs').appendChild(b);
       return b;
     });
     let photoPick = null;
 
-    let result = null, timeline = null, reg = null;
+    let result = null, timeline = null, reg = null, stops = null;
+    function show(v) {
+      const i = stops.indexOf(v);
+      if (i < 0) throw new Error(`day ${v} is not a stop on the slider`);
+      dayInput.value = String(i);
+      applyDay(v);
+    }
     function applyDay(v) {
       showStates((id) => timeline.stateOn(id, v));
       dayDate.textContent = `Day ${v} · ${longDate(result.dateOf(v))}`;
@@ -709,7 +716,7 @@ try {
         return `<tr><td>${esc(PARTS[id])}</td><td class="st-${s}">${text}</td></tr>`;
       }).join('');
     }
-    dayInput.addEventListener('input', () => applyDay(+dayInput.value));
+    dayInput.addEventListener('input', () => applyDay(stops[+dayInput.value]));
 
     const Pj = window.PROJECT, PL = window.ProcLib, PS = window.ProcSchedule;
     if (!Pj || !PL || !PS || !window.ProcLoad || !window.Catalog || !window.PROCEDURE_IDS) throw new Error('the rebuild schedule scripts did not load');
@@ -719,20 +726,20 @@ try {
       if (result.unfinished.length) throw new Error(`the schedule leaves jobs unfinished: ${result.unfinished.join(', ')}`);
       timeline = PS.partTimeline(result, reg);
       const last = Math.max(...result.done);
-      dayInput.max = String(last);
-      dayInput.value = String(last);
+      stops = [...new Set([0, ...photoDays, ...result.days.filter((d) => d.did.length).map((d) => d.day), last])].sort((a, b) => a - b);
+      dayInput.max = String(stops.length - 1);
       dayInput.disabled = false;
 
       const jumps = document.getElementById('jumps');
       const jump = (text, v) => {
         const b = document.createElement('button');
         b.className = 'btn'; b.textContent = text;
-        b.addEventListener('click', () => { dayInput.value = String(v); applyDay(v); });
+        b.addEventListener('click', () => show(v));
         jumps.appendChild(b);
       };
       jump('As found', 0);
       for (const id of Pj.schedule.milestones) jump(reg.get(id).title.replace(/,.*$/, ''), result.finish(id));
-      applyDay(last);
+      show(last);
     }).catch(showError);
   }
 

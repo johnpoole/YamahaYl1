@@ -1,10 +1,12 @@
 // M2: Engine
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/plan.m2-engine.js');
   const procedure = {
     id: 'plan.m2-engine',
     kind: 'plan',
-    window: { from: 690 },
+    window: { from: design.dayOf(design.RESUME) },
     title: 'M2: Engine',
     purpose: 'Rebuild the engine and put it back in the frame.',
     requires: { tools: [], materials: [], skills: [] },
@@ -12,7 +14,6 @@
     preconditions: [],
     steps: [
       { call: 'parts.order' },
-      { call: 'engine.remove' },
       { call: 'engine.bore' },
       { call: 'engine.split-cases' },
       { call: 'engine.bottom-end' },

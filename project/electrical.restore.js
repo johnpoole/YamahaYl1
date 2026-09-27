@@ -13,6 +13,7 @@
     preconditions: [],
     steps: [
       'Repair or replace every wire and connector on the inspection list.',
+      'Fit the harness back on the frame along the photographed routing.',
       'Clean every ground to bare metal.',
       'Fit the new rectifier.',
       'Charge the battery at the confirmed voltage and fit it.',

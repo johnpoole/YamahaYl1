@@ -5,10 +5,10 @@
     id: 'engine.remove',
     kind: 'task',
     removes: ['engine', 'exhaust'],
-    after: ['parts.list'],
+    after: ['strip.carbs', 'shop.stand'],
     title: 'Take the engine out',
     purpose: 'The cases have to come apart for the crank seals.',
-    requires: { tools: ['sockets', 'wrenches', 'stands'], materials: [], skills: [] },
+    requires: { tools: ['sockets', 'wrenches', 'stands'], materials: [{ id: 'penetrating-oil', qty: 1 }], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
@@ -17,6 +17,7 @@
       'Disconnect the clutch cable, the chain and the wiring to the engine.',
       'Support the engine from below and take out the mounting bolts.',
       'Lower the engine out and carry it to the bench.',
+      'Soak the head nuts in penetrating oil so it has a night to work before the top end comes off.',
     ],
     checks: [
       'Engine on the bench, every bolt bagged by location.',

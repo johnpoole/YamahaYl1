@@ -1,10 +1,12 @@
 // M1: Assessment
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/plan.m1-assessment.js');
   const procedure = {
     id: 'plan.m1-assessment',
     kind: 'plan',
-    window: { from: 690 },
+    window: { from: design.dayOf(design.RESUME) },
     title: 'M1: Assessment',
     purpose: 'Measure and assess every system, and turn what you find into a parts list.',
     requires: { tools: [], materials: [], skills: [] },
@@ -21,8 +23,9 @@
       { call: 'carbs.assess' },
       { call: 'ignition.assess' },
       { call: 'wiring.inspect' },
-      { call: 'strip.tank-seat' },
       { call: 'strip.wheels' },
+      { call: 'fork.remove' },
+      { call: 'strip.swingarm' },
       { call: 'brakes.measure' },
       { call: 'tires.check' },
       { call: 'frame.inspect' },

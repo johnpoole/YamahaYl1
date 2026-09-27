@@ -99,7 +99,7 @@ The cylinder wall, rings, and piston skirt must seat properly during break-in. T
 **Phase 3 — 100–300 km (60–180 miles)**
 - Gradually increase maximum throttle opening toward full.
 - Still avoid prolonged full-throttle runs.
-- At 300 km: drain and replace Autolube oil tank (break-in oil will contain metal particles); re-check all torque values; re-check ignition timing and valve (N/A for 2-stroke) / carburetor settings.
+- At 300 km: drain and refill the gearbox oil (it carries the break-in wear; Autolube oil is burned once and never returns to the tank); re-check all torque values; re-check ignition timing and valve (N/A for 2-stroke) / carburetor settings.
 
 **After 300 km:** Normal operation resumes. The engine is now broken in.
 
@@ -145,5 +145,5 @@ At 300–500km after rebuild:
 - Re-check and re-set points gap (break-in heat cycles can cause slight movement).
 - Re-check ignition timing.
 - Inspect and clean (or replace) spark plugs.
-- Change Autolube oil / re-check premix if applicable.
+- Change the gearbox oil. Re-check the premix ratio if applicable.
 - Inspect for any new leaks or fastener loosening.

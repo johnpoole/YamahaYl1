@@ -35,7 +35,7 @@ test('every job is scheduled, and none runs past its window', () => {
 test('each strip-down session falls on the day its photos were taken', () => {
   const r = run();
   const sessions = [...reg.values()].filter((p) => /^plan\.day-/.test(p.id));
-  assert.equal(sessions.length, 8);
+  assert.equal(sessions.length, 9);
   const photoDates = new Set(PHOTOS.map((p) => p.date));
   for (const p of sessions) {
     const date = p.id.slice('plan.day-'.length);
@@ -68,8 +68,8 @@ test('on 10 January 2025 the bike stands as the last photos show it', () => {
   const state = Object.fromEntries(Object.keys(D.PARTS).map((id) => [id, tl.stateOn(id, day)]));
   assert.deepEqual(state, {
     frame: 'original', 'front-end': 'original', headlight: 'off', 'front-wheel': 'original', 'rear-wheel': 'original',
-    'rear-suspension': 'original', engine: 'original', 'top-end': 'off', 'magneto-cover': 'off', carbs: 'off',
-    exhaust: 'original', electrics: 'original', tank: 'original', seat: 'original', 'side-covers': 'off', stand: 'restored',
+    'rear-suspension': 'original', engine: 'off', 'top-end': 'off', 'magneto-cover': 'off', carbs: 'off',
+    exhaust: 'off', electrics: 'original', tank: 'off', seat: 'off', 'side-covers': 'off', stand: 'restored',
   });
 });
 
@@ -96,5 +96,14 @@ test('every spec a procedure quotes is in the spec reference', () => {
   for (const k of ['spec.floatLevel', 'spec.pilotTurns', 'spec.plugGap', 'spec.pointsGap', 'spec.ringGap', 'spec.bigEndLimit', 'spec.pumpClearance']) {
     const v = String(D.params[k]).split('–')[0];
     assert.ok(ref.includes(v), `${k} = ${D.params[k]} is not in docs/YL1_Spec_Reference.md`);
+  }
+});
+
+test('the frame is empty when its rust is treated', () => {
+  const r = run();
+  const tl = S.partTimeline(r, reg);
+  const start = r.days.find((d) => d.did.some((x) => x.id === 'frame.treat')).day;
+  for (const id of ['front-end', 'front-wheel', 'rear-wheel', 'rear-suspension', 'engine', 'electrics', 'tank', 'seat']) {
+    assert.equal(tl.stateOn(id, start - 1), 'off', `${id} is on the frame when frame.treat starts on ${r.dateOf(start)}`);
   }
 });

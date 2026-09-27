@@ -15,7 +15,7 @@
     ['PXL_20250106_203200195.jpg', 'Handlebar clamps and fork tops.'],
     ['PXL_20250106_203236199.jpg', 'Rear wheel, chain, brake and shock.'],
     ['PXL_20250106_203242634.jpg', 'The bike on the stand, frame and engine from the right.'],
-    ['PXL_20250107_191402305.NIGHT.jpg', 'Frame, engine and rear wheel on the stand, left side.'],
+    ['PXL_20250107_191402305.NIGHT.jpg', 'Frame and rear wheel on the stand, left side. The engine is out, on the floor below.'],
     ['PXL_20250108_183134527.MP.jpg', 'Cylinder block and heads off the engine.'],
     ['PXL_20250109_220023834.jpg', 'Pistons on the cases, engine L1-47603.'],
     ['PXL_20250110_221342751.jpg', 'Rust inside the frame.'],

@@ -5,7 +5,7 @@
     id: 'fork.rebuild',
     kind: 'task',
     builds: ['front-end'],
-    after: ['fork.remove', 'parts.order'],
+    after: ['fork.remove', 'parts.order', 'frame.treat'],
     title: 'Rebuild and refit the forks',
     purpose: 'New seals, fresh oil, and the forks back in the frame.',
     requires: { tools: ['sockets', 'bearing-drivers'], materials: [{ id: 'fork-seals', qty: 1 }, { id: 'sae30-oil', qty: 0.26 }], skills: [] },

@@ -10,6 +10,7 @@
 //     { type: 'weekly', hours: [Sun, Mon, … Sat] }    hours by day of the week
 //     { type: 'daylight', latitude, overheadHours, maxWorkHours, minWorkHours }
 //                                                     sunrise to sunset, less overhead, within limits
+//   dates   { 'YYYY-MM-DD': hours } for days that had their own hours, such as past sessions
 (function (root) {
   'use strict';
 
@@ -36,8 +37,28 @@
   const dateOn = (cal, day) => { const d = startDate(cal); d.setUTCDate(d.getUTCDate() + day); return d; };
   const dayOfYear = (d) => Math.floor((d - Date.UTC(d.getUTCFullYear(), 0, 1)) / 86400000) + 1;
 
+  // Every date given its own hours must be a real date inside the calendar, or its hours would never count.
+  function checkDates(cal) {
+    if (cal.dates === undefined) return;
+    if (!cal.dates || typeof cal.dates !== 'object') throw new Error(`schedule: calendar.dates must be { 'YYYY-MM-DD': hours }, got ${JSON.stringify(cal.dates)}`);
+    const first = dateOn(cal, 0).toISOString().slice(0, 10), last = dateOn(cal, cal.days - 1).toISOString().slice(0, 10);
+    for (const [iso, h] of Object.entries(cal.dates)) {
+      const real = /^\d{4}-\d{2}-\d{2}$/.test(iso) && !Number.isNaN(Date.parse(`${iso}T00:00:00Z`)) && new Date(`${iso}T00:00:00Z`).toISOString().slice(0, 10) === iso;
+      if (!real) throw new Error(`schedule: calendar.dates has "${iso}", which is not a date like "2026-09-15"`);
+      if (iso < first || iso > last) throw new Error(`schedule: calendar.dates has ${iso}, outside the calendar's ${first} to ${last}`);
+      if (!(typeof h === 'number' && h >= 0)) throw new Error(`schedule: calendar.dates["${iso}"] must be hours ≥ 0, got ${JSON.stringify(h)}`);
+    }
+  }
+
   // Working hours on a given day, and the daylight when the calendar uses it.
   function workHours(cal, day) {
+    const base = usualHours(cal, day);
+    const iso = dateOn(cal, day).toISOString().slice(0, 10);
+    if (cal.dates && Object.prototype.hasOwnProperty.call(cal.dates, iso)) return { work: cal.dates[iso], light: base.light };
+    return base;
+  }
+
+  function usualHours(cal, day) {
     const h = cal.hours, d = dateOn(cal, day);
     if (h.type === 'fixed') {
       if (!(typeof h.hours === 'number' && h.hours >= 0)) throw new Error('schedule: fixed calendar needs hours ≥ 0');
@@ -107,6 +128,7 @@
     if (!calendar || typeof calendar !== 'object') throw new Error('schedule: run needs the project calendar');
     const cal = { ...DEFAULTS, ...calendar, hours: calendar.hours || DEFAULTS.hours };
     startDate(cal);
+    checkDates(cal);
     const { jobs, routines, toolMaker } = compile(rootId, reg, cat, L);
     const left = jobs.map((j) => j.hours);
     const done = jobs.map(() => null);   // day finished
