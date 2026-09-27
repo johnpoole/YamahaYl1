@@ -62,9 +62,12 @@
           <p class="sub">${T(P.intro)}</p>
           ${problems.length ? `<div class="err">Problems in the instructions:\n${esc(problems.join('\n'))}</div>` : ''}
           <div class="list">${groups.map((k) => {
-            const ps = [...reg.values()].filter((p) => p.kind === k);
+            const ps = [...reg.values()].filter((p) => p.kind === k && p.status !== 'open');
             return ps.length ? `<div class="group"><h2>${KIND_NAMES[k]}${k === 'skill' ? 's' : k === 'plan' ? 's' : ''}</h2><ul>${ps.map((p) => `<li>${link(p.id)} <span class="src">— ${T(p.purpose)}</span></li>`).join('')}</ul></div>` : '';
-          }).join('')}</div>
+          }).join('')}${(() => {
+            const open = [...reg.values()].filter((p) => p.status === 'open');
+            return open.length ? `<div class="group"><h2>Open (${open.length})</h2><ul>${open.map((p) => `<li>${link(p.id)} <span class="src">— ${T(p.purpose)}</span></li>`).join('')}</ul></div>` : '';
+          })()}</div>
           <h2>${esc(W.kitHeading)}</h2>
           <p class="sub">${esc(W.kitIntro)}</p>
           ${ul(C.KIT.map((t) => T(C.TOOLS[t].name)))}`;
@@ -82,11 +85,11 @@
         const hasCalls = p.steps.some(L.isCall);
         const fromSite = n.inputs.filter((m) => C.MATERIALS[m.id].source !== 'bought');
         const partNames = P.parts ? P.parts() : {};
-        const partName = (id) => esc(partNames[id] || id);
+        const partName = (id) => { const x = partNames[id]; return esc(x ? (typeof x === 'string' ? x : x.name) : id); };
         const bought = [...n.boughtTools.map(toolName), ...n.boughtMaterials.map((m) => matName(m))];
         app.innerHTML = `
           <p><a href="#">All instructions</a></p>
-          <div class="head"><span class="chip">${KIND_NAMES[p.kind]}</span><span class="id">${esc(p.id)}</span></div>
+          <div class="head"><span class="chip">${p.status === 'open' ? 'Open' : KIND_NAMES[p.kind]}</span><span class="id">${esc(p.id)}</span></div>
           <h1>${T(p.title)}</h1>
           <p class="sub">${T(p.purpose)}</p>
           ${by.length ? `<p class="src">Called by: ${by.map(link).join(', ')}</p>` : ''}
@@ -115,7 +118,7 @@
 
           ${p.preconditions.length ? `<h2>Before you start</h2>${ul(p.preconditions.map(T))}` : ''}
           <h2>Steps</h2>
-          <ol class="steps">${steps}</ol>
+          ${p.steps.length ? `<ol class="steps">${steps}</ol>` : '<p class="src">No steps yet.</p>'}
           ${p.checks.length ? `<h2>Done when</h2>${ul(p.checks.map(T))}` : ''}
           ${p.safety.length ? `<h2>Safety</h2><ul class="safety">${p.safety.map((s) => `<li>${T(s)}</li>`).join('')}</ul>` : ''}
           <h2>Time</h2>
@@ -128,10 +131,12 @@
         document.title = Sc.pageTitle;
         const r = Sch.run(P.root, reg, C, L, P.calendar);
         const fmt = (d) => d === null ? '<strong>not done</strong>' : `${r.dateOf(d)} (day ${d})`;
-        const milestones = (Sc.milestones || []).filter((id) => reg.get(id)).map((id) => {
+        // A milestone is an id, or [id, label] to name the stage it ends.
+        const milestones = (Sc.milestones || []).map((m) => (Array.isArray(m) ? m : [m, null])).map(([id, label]) => {
+          if (!reg.get(id)) throw new Error(`schedule milestone "${id}" is not a procedure`);
           // A milestone is due when its last job is due.
           const due = r.jobs.filter((j) => j.id === id || j.parents.includes(id)).reduce((t, j) => Math.max(t, j.window.to), -Infinity);
-          return `<tr><td>${link(id)}</td><td>${fmt(r.finish(id))}</td><td>${due === Infinity ? '–' : `${r.dateOf(due)} (day ${due})`}</td></tr>`;
+          return `<tr><td>${label ? `<a href="#${esc(id)}">${esc(label)}</a>` : link(id)}</td><td>${fmt(r.finish(id))}</td><td>${due === Infinity ? '–' : `${r.dateOf(due)} (day ${due})`}</td></tr>`;
         }).join('');
         const hasLight = r.days.some((d) => d.daylight !== null);
         const weeks = [];

@@ -1,9 +1,12 @@
 // Measure the pistons and rings
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/measure.pistons.js');
   const procedure = {
     id: 'measure.pistons',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     after: ['strip.top-end'],
     title: 'Measure the pistons and rings',
     purpose: 'Check piston fit and ring wear. Backlog B-013.',

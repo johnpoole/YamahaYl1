@@ -4,7 +4,7 @@
   const procedure = {
     id: 'brakes.measure',
     kind: 'task',
-    after: ['strip.wheels'],
+    after: ['strip.front-wheel', 'strip.rear-wheel'],
     title: 'Measure the brakes',
     purpose: 'Check drums and shoes against their limits. Backlog B-018.',
     requires: { tools: ['caliper'], materials: [], skills: ['skill.measure'] },

@@ -4,7 +4,7 @@
   const procedure = {
     id: 'electrical.restore',
     kind: 'task',
-    builds: ['electrics', 'headlight'],
+    builds: ['wiring', 'charging', 'lights'],
     after: ['wiring.inspect', 'check.voltage', 'parts.order', 'engine.install'],
     title: 'Repair the wiring and fit the battery',
     purpose: 'A sound harness, clean grounds, a working rectifier and a charged battery.',

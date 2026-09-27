@@ -1,9 +1,12 @@
 // Check the Autolube pump
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/check.autolube.js');
   const procedure = {
     id: 'check.autolube',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     title: 'Check the Autolube pump',
     purpose: 'Decide whether the engine runs on Autolube injection or premix. Backlog B-002.',
     requires: { tools: ['feeler-gauges', 'jis-drivers'], materials: [], skills: [] },

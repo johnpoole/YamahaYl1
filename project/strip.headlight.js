@@ -4,8 +4,9 @@
   const procedure = {
     id: 'strip.headlight',
     kind: 'task',
+    oneJobADay: true,
     after: ['record.as-found'],
-    removes: ['headlight'],
+    removes: ['lights'],
     title: 'Take out the headlight and speedometer',
     purpose: 'See the wiring in the headlight shell, and free the speedometer.',
     requires: { tools: ['jis-drivers'], materials: [], skills: ['skill.jis-screws'] },

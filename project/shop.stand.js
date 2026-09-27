@@ -4,6 +4,7 @@
   const procedure = {
     id: 'shop.stand',
     kind: 'task',
+    oneJobADay: true,
     after: ['strip.carbs'],
     builds: ['stand'],
     title: 'Put the bike on a work stand',

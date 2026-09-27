@@ -5,7 +5,7 @@
     id: 'strip.swingarm',
     kind: 'task',
     removes: ['rear-suspension'],
-    after: ['strip.wheels'],
+    after: ['strip.rear-wheel'],
     title: 'Take off the swingarm and shocks',
     purpose: 'Empty the frame for the rust treatment and get the pivot bushes out to check.',
     requires: { tools: ['sockets', 'wrenches'], materials: [], skills: [] },

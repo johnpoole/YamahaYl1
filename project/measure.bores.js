@@ -1,9 +1,12 @@
 // Measure both bores
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/measure.bores.js');
   const procedure = {
     id: 'measure.bores',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     after: ['strip.top-end'],
     title: 'Measure both bores',
     purpose: 'Decide between honing and reboring. Backlog B-012.',

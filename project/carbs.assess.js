@@ -1,9 +1,12 @@
 // Strip and assess both carbs
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/carbs.assess.js');
   const procedure = {
     id: 'carbs.assess',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     after: ['strip.carbs'],
     title: 'Strip and assess both carbs',
     purpose: 'Find what the carbs need. Backlog B-015.',

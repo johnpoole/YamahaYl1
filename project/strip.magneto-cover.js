@@ -4,8 +4,9 @@
   const procedure = {
     id: 'strip.magneto-cover',
     kind: 'task',
+    oneJobADay: true,
     after: ['strip.headlight'],
-    removes: ['magneto-cover'],
+    removes: ['ignition'],
     title: 'Take off the magneto cover',
     purpose: 'See the points and flywheel on the left of the engine.',
     requires: { tools: ['jis-drivers', 'impact-driver'], materials: [], skills: ['skill.jis-screws'] },

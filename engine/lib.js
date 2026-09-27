@@ -61,7 +61,11 @@
     }
     if (p.kind === 'make' && !o.tools.length) e.push(`${at}: a make procedure must produce a tool`);
     if (p.kind === 'gather' && !o.materials.length) e.push(`${at}: a gather procedure must produce a material`);
-    if (!p.steps.length) e.push(`${at}: has no steps`);
+    const open = p.status === 'open';
+    if (p.status !== undefined && !open) e.push(`${at}: status must be "open" when given`);
+    if (open && p.kind !== 'task') e.push(`${at}: only a task can be open`);
+    if (open && (p.steps.length || !(p.estimate && p.estimate.hours === 0))) e.push(`${at}: an open task has no steps and 0 hours yet; once it has steps, drop status: 'open'`);
+    if (!p.steps.length && !open) e.push(`${at}: has no steps`);
     for (const s of p.steps) {
       if (isCall(s)) {
         if (!reg.get(s.call)) e.push(`${at}: calls "${s.call}", which does not exist`);
@@ -69,7 +73,7 @@
       }
       else if (typeof s !== 'string' || !s.trim()) e.push(`${at}: a step must be text or {call: "id"}`);
     }
-    if (!p.checks.length && p.kind !== 'skill') e.push(`${at}: needs at least one check that says when it is done`);
+    if (!p.checks.length && p.kind !== 'skill' && !open) e.push(`${at}: needs at least one check that says when it is done`);
     if (!p.estimate || !(typeof p.estimate.hours === 'number' && p.estimate.hours >= 0)) e.push(`${at}: estimate.hours is missing`);
     if (p.estimate && p.estimate.waitDays !== undefined && !(typeof p.estimate.waitDays === 'number' && p.estimate.waitDays > 0)) e.push(`${at}: estimate.waitDays must be a number of days above 0`);
     if (p.repeat !== undefined && p.repeat !== 'daily') e.push(`${at}: repeat must be "daily" when given`);
@@ -87,12 +91,12 @@
     }
     if (p.estimate && p.estimate.afterDark !== undefined && typeof p.estimate.afterDark !== 'boolean') e.push(`${at}: estimate.afterDark must be true or false`);
     if (p.oneJobADay !== undefined) {
-      if (p.kind !== 'plan') e.push(`${at}: only a plan can have oneJobADay`);
+      if (p.kind !== 'plan' && p.kind !== 'task') e.push(`${at}: only a plan or a task can have oneJobADay`);
       if (typeof p.oneJobADay !== 'boolean') e.push(`${at}: oneJobADay must be true or false`);
     }
     if (p.window !== undefined) {
       const w = p.window;
-      if (p.kind !== 'plan') e.push(`${at}: only a plan can have a window`);
+      if (p.kind !== 'plan' && p.kind !== 'task') e.push(`${at}: only a plan or a task can have a window`);
       if (!w || !(typeof w.from === 'number' && w.from >= 0) || (w.to !== undefined && !(typeof w.to === 'number' && w.to >= w.from))) e.push(`${at}: window must be { from, to } in days from the start, with to ≥ from`);
     }
     return e;

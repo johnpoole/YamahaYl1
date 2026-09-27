@@ -30,10 +30,10 @@ test('every local script, image and link on each page points at a file that exis
   }
 });
 
-test('the bike page draws every part of the design and nothing else', () => {
+test('the bike page draws every group the parts name and nothing else', () => {
   const html = fs.readFileSync(path.join(root, 'bike', 'index.html'), 'utf8');
   const drawn = new Set([...html.matchAll(/beginPart\('([a-z-]+)'\)/g)].map((m) => m[1]));
-  assert.deepEqual([...drawn].sort(), Object.keys(D.PARTS).sort());
+  assert.deepEqual([...drawn].sort(), [...new Set(Object.values(D.PARTS).map((p) => p.draw))].sort());
 });
 
 test('every photo is listed once and every listed photo is there', () => {

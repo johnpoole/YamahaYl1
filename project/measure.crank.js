@@ -1,9 +1,12 @@
 // Check the crank big ends
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/measure.crank.js');
   const procedure = {
     id: 'measure.crank',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     after: ['strip.top-end'],
     title: 'Check the crank big ends',
     purpose: 'Find out whether the cases must be split for the crank. Backlog B-014.',

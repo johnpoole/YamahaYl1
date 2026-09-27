@@ -4,7 +4,7 @@
   const procedure = {
     id: 'engine.install',
     kind: 'task',
-    builds: ['engine', 'top-end'],
+    builds: ['bottom-end', 'gearbox', 'clutch', 'top-end'],
     after: ['engine.top-end', 'frame.treat'],
     title: 'Put the engine back in the frame',
     purpose: 'Mount the rebuilt engine and fill the gearbox.',

@@ -4,6 +4,7 @@
   const procedure = {
     id: 'strip.carbs',
     kind: 'task',
+    oneJobADay: true,
     after: ['strip.magneto-cover'],
     removes: ['carbs'],
     title: 'Take off the carburetors',

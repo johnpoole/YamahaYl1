@@ -82,7 +82,7 @@
     findRoutines(rootId, { from: 0, to: Infinity });
     // Build jobs: what actually runs once the stock is taken into account.
     const r = L.run(rootId, reg, cat, { supplied: L.dailyMaterials(rootId, reg) });
-    const jobs = [], lastMaker = new Map(), toolMaker = new Map(), lastRun = new Map(), stack = [];
+    const jobs = [], lastMaker = new Map(), toolMaker = new Map(), lastRun = new Map(), stack = [], afters = [];
     for (const e of r.events) {
       const p = reg.get(e.id);
       if (e.type === 'enter') {
@@ -95,17 +95,36 @@
       const deps = new Set();
       for (const t of p.requires.tools) if (lastMaker.has(t)) deps.add(lastMaker.get(t));
       for (const m of p.requires.materials) if (lastMaker.has(m.id)) deps.add(lastMaker.get(m.id));
-      for (const a of p.after || []) {
-        if (!lastRun.has(a)) throw new Error(`schedule: ${e.id} comes after ${a}, but the plan does not run ${a} before ${e.id}; move the call to ${a} earlier (checkProject reports this too)`);
-        deps.add(lastRun.get(a));
-      }
       const job = { index: jobs.length, id: e.id, hours: p.estimate.hours, waitDays: p.estimate.waitDays || 0, deps: [...deps], window: frame.window, oneADay: frame.oneADay, parents: stack.map((f) => f.id) };
       jobs.push(job);
       for (const t of p.produces.tools) { lastMaker.set(t, job.index); if (!toolMaker.has(t)) toolMaker.set(t, job.index); }
       for (const m of p.produces.materials) lastMaker.set(m.id, job.index);
       lastRun.set(e.id, job.index);
+      afters.push([job, p.after || []]);
     }
+    // after names jobs anywhere in the plan, earlier or later in the tree; the tree order only sets priority.
+    for (const [job, list] of afters) for (const a of list) {
+      if (!lastRun.has(a)) throw new Error(`schedule: ${job.id} comes after ${a}, but the plan never runs ${a} (checkProject reports this too)`);
+      job.deps.push(lastRun.get(a));
+    }
+    const loop = findLoop(jobs.map((j) => j.deps));
+    if (loop) throw new Error(`schedule: these jobs wait on each other in a loop: ${loop.map((i) => jobs[i].id).join(' → ')}`);
     return { jobs, routines, toolMaker };
+  }
+
+  // The first loop in a graph given as a list of each node's dependencies, as node indexes, or null.
+  function findLoop(deps) {
+    const state = deps.map(() => 0), path = [];
+    const visit = (i) => {
+      if (state[i] === 2) return null;
+      if (state[i] === 1) return [...path.slice(path.indexOf(i)), i];
+      state[i] = 1; path.push(i);
+      for (const d of deps[i]) { const l = visit(d); if (l) return l; }
+      state[i] = 2; path.pop();
+      return null;
+    };
+    for (let i = 0; i < deps.length; i++) { const l = visit(i); if (l) return l; }
+    return null;
   }
 
   function run(rootId, reg, cat, L, calendar) {
@@ -195,7 +214,7 @@
     return { events, stateOn };
   }
 
-  const api = { DEFAULTS, daylight, workHours, compile, run, partDays, partTimeline };
+  const api = { DEFAULTS, daylight, workHours, compile, findLoop, run, partDays, partTimeline };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.ProcSchedule = api;
 })(this);

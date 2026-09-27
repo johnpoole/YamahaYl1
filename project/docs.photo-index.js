@@ -1,9 +1,12 @@
 // Annotate the photo index
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/docs.photo-index.js');
   const procedure = {
     id: 'docs.photo-index',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     title: 'Annotate the photo index',
     purpose: 'Give every photo a date, a system and a description. Backlog B-005.',
     requires: { tools: [], materials: [], skills: [] },

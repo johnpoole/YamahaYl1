@@ -4,7 +4,7 @@
   const procedure = {
     id: 'wiring.inspect',
     kind: 'task',
-    removes: ['electrics'],
+    removes: ['wiring', 'charging'],
     after: ['strip.headlight', 'check.voltage'],
     title: 'Inspect the wiring harness',
     purpose: 'Find every crack, corroded connector and bad ground. Backlog B-017.',

@@ -1,9 +1,12 @@
 // Assess the points and timing marks
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/ignition.assess.js');
   const procedure = {
     id: 'ignition.assess',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     after: ['strip.magneto-cover'],
     title: 'Assess the points and timing marks',
     purpose: 'Find what the ignition needs. Backlog B-016.',

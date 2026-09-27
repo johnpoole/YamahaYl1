@@ -4,7 +4,7 @@
   const procedure = {
     id: 'tires.check',
     kind: 'task',
-    after: ['strip.wheels'],
+    after: ['strip.front-wheel', 'strip.rear-wheel'],
     title: 'Check the tires',
     purpose: 'Old rubber fails whatever the tread looks like. Backlog B-020.',
     requires: { tools: [], materials: [], skills: [] },

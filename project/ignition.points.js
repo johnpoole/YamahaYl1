@@ -4,7 +4,7 @@
   const procedure = {
     id: 'ignition.points',
     kind: 'task',
-    builds: ['magneto-cover'],
+    builds: ['ignition'],
     after: ['engine.install', 'ignition.assess', 'parts.order'],
     title: 'Fit new points and set the timing',
     purpose: 'New points and condensers on both sides, gapped and timed. Backlog B-036.',

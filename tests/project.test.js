@@ -14,6 +14,8 @@ const PHOTOS = require('../media/photos.js');
 const dir = path.join(__dirname, '..', 'project');
 const reg = L.byId(load());
 const run = () => S.run(project.root, reg, C, L, project.calendar);
+// The strip-down jobs, in the order of the photos that show them.
+const STRIP = [...new Set(PHOTOS.map((p) => p.job))];
 
 test('the index lists every procedure file and nothing else', () => {
   const others = ['catalog', 'design', 'index', 'project'];
@@ -22,7 +24,7 @@ test('the index lists every procedure file and nothing else', () => {
 });
 
 test('the project keeps every rule the engine checks', () => {
-  assert.deepEqual(checkProject({ reg, cat: C, root: project.root, params: project.params(), parts: project.parts() }), []);
+  assert.deepEqual(checkProject({ reg, cat: C, root: project.root, params: project.params(), parts: project.parts(), sections: project.sections() }), []);
 });
 
 test('every job is scheduled, and none runs past its window', () => {
@@ -32,15 +34,13 @@ test('every job is scheduled, and none runs past its window', () => {
   assert.equal(r.dateOf(0), D.START);
 });
 
-test('each photo shows a job the strip-down runs, and the photos run in the order of the work', () => {
+test('each photo shows a job the plan runs, and the photos run in the order of the work', () => {
   const r = run();
-  const strip = new Set(L.trace('plan.strip-down', reg).map((x) => x.id));
   let last = -1, lastJob = null;
   for (const p of PHOTOS) {
-    assert.ok(strip.has(p.job), `${p.file} shows ${p.job}, which the strip-down does not run`);
+    assert.ok(r.jobs.some((j) => j.id === p.job), `${p.file} shows ${p.job}, which the plan does not run`);
     const i = r.jobs.findIndex((j) => j.id === p.job);
-    assert.ok(i > last || p.job === lastJob, `${p.file} shows ${p.job}, which finishes before ${lastJob} in the photos before it`);
-    assert.ok(r.done[i] >= (last < 0 ? 0 : r.done[last]), `${p.file}: ${p.job} finishes on day ${r.done[i]}, before ${lastJob}`);
+    assert.ok(last < 0 || p.job === lastJob || r.done[i] > r.done[last], `${p.file}: ${p.job} finishes on day ${r.done[i]}, not after ${lastJob} in the photo before it`);
     last = i; lastJob = p.job;
   }
 });
@@ -49,9 +49,7 @@ test('the rebuild waits for its start date, and riding waits for the roads', () 
   const r = run();
   const first = new Map();
   r.days.forEach((d) => d.did.forEach((x) => { if (!first.has(x.id)) first.set(x.id, d.day); }));
-  const history = new Set();
-  const walk = (id) => { history.add(id); for (const s of reg.get(id).steps) if (s.call) walk(s.call); };
-  walk('plan.strip-down');
+  const history = new Set(STRIP);
   for (const [id, day] of first) {
     if (history.has(id)) assert.ok(day < D.dayOf(D.RESUME), `${id} is history but runs on ${r.dateOf(day)}`);
     else assert.ok(day >= D.dayOf(D.RESUME), `${id} starts ${r.dateOf(day)}, before work resumes on ${D.RESUME}`);
@@ -64,12 +62,13 @@ test('the rebuild waits for its start date, and riding waits for the roads', () 
 test('at the end of the strip-down the bike stands as the last photos show it', () => {
   const r = run();
   const tl = S.partTimeline(r, reg);
-  const day = r.finish('plan.strip-down');
+  const day = r.finish(STRIP[STRIP.length - 1]);
   const state = Object.fromEntries(Object.keys(D.PARTS).map((id) => [id, tl.stateOn(id, day)]));
   assert.deepEqual(state, {
-    frame: 'original', 'front-end': 'original', headlight: 'off', 'front-wheel': 'original', 'rear-wheel': 'original',
-    'rear-suspension': 'original', engine: 'off', 'top-end': 'off', 'magneto-cover': 'off', carbs: 'off',
-    exhaust: 'off', electrics: 'original', tank: 'off', seat: 'off', 'side-covers': 'off', stand: 'restored',
+    'top-end': 'off', 'bottom-end': 'off', gearbox: 'off', clutch: 'off', autolube: 'off', exhaust: 'off',
+    carbs: 'off', tank: 'off', ignition: 'off', charging: 'original', wiring: 'original', lights: 'off',
+    frame: 'original', 'front-end': 'original', 'rear-suspension': 'original', 'front-wheel': 'original', 'rear-wheel': 'original',
+    chain: 'original', controls: 'original', seat: 'off', 'side-covers': 'off', stand: 'restored',
   });
 });
 
@@ -103,16 +102,25 @@ test('the frame is empty when its rust is treated', () => {
   const r = run();
   const tl = S.partTimeline(r, reg);
   const start = r.days.find((d) => d.did.some((x) => x.id === 'frame.treat')).day;
-  for (const id of ['front-end', 'front-wheel', 'rear-wheel', 'rear-suspension', 'engine', 'electrics', 'tank', 'seat']) {
+  for (const id of ['front-end', 'front-wheel', 'rear-wheel', 'rear-suspension', 'bottom-end', 'gearbox', 'wiring', 'charging', 'tank', 'seat']) {
     assert.equal(tl.stateOn(id, start - 1), 'off', `${id} is on the frame when frame.treat starts on ${r.dateOf(start)}`);
   }
 });
 
 test('each strip-down job starts after the one before it is finished, so the bike can be seen after every step', () => {
   const r = run();
-  const ids = reg.get('plan.strip-down').steps.map((s) => s.call);
+  const ids = STRIP;
   for (let k = 1; k < ids.length; k++) {
     const start = r.days.find((d) => d.did.some((x) => x.id === ids[k])).day;
     assert.ok(start > r.finish(ids[k - 1]), `${ids[k]} starts on day ${start}, the day ${ids[k - 1]} finishes`);
   }
+});
+
+test('every part of the bike sits in a section and has its own plan, and every open job belongs to a part', () => {
+  for (const [id, part] of Object.entries(D.PARTS)) {
+    assert.ok(part.section in D.SECTIONS, `${id} is in no section`);
+    assert.ok(reg.get(`part.${id}`), `${id} has no plan`);
+  }
+  const inParts = new Set(Object.keys(D.PARTS).flatMap((id) => L.trace(`part.${id}`, reg).map((x) => x.id)));
+  for (const p of reg.values()) if (p.status === 'open') assert.ok(inParts.has(p.id), `${p.id} is open but belongs to no part`);
 });

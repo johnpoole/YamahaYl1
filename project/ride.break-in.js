@@ -1,9 +1,12 @@
 // Ride the break-in
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/ride.break-in.js');
   const procedure = {
     id: 'ride.break-in',
     kind: 'task',
+    window: { from: design.dayOf(design.RIDING) },
     removes: ['stand'],
     after: ['start.first'],
     title: 'Ride the break-in',

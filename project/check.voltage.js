@@ -1,9 +1,12 @@
 // Find out whether the bike is 6 or 12 volt
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/check.voltage.js');
   const procedure = {
     id: 'check.voltage',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     title: 'Find out whether the bike is 6 or 12 volt',
     purpose: 'The manual says 12 V but many sources say 6 V. Settle it before buying a battery, bulbs or a rectifier.',
     requires: { tools: ['multimeter'], materials: [], skills: [] },

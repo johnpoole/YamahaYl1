@@ -1,9 +1,12 @@
 // Inspect the frame
 (function (root) {
   'use strict';
+  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
+  if (!design) throw new Error('project/design.js did not load before project/frame.inspect.js');
   const procedure = {
     id: 'frame.inspect',
     kind: 'task',
+    window: { from: design.dayOf(design.RESUME) },
     after: ['inspect.frame-inside'],
     title: 'Inspect the frame',
     purpose: 'Look for cracks and rust damage before building on it. Backlog B-019.',

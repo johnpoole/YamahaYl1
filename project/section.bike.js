@@ -1,23 +1,29 @@
-// M4: Break-in
+// The whole bike
 (function (root) {
   'use strict';
-  const design = typeof module !== 'undefined' && module.exports ? require('./design.js') : root.YL1Design;
-  if (!design) throw new Error('project/design.js did not load before project/plan.m4-break-in.js');
   const procedure = {
-    id: 'plan.m4-break-in',
+    id: 'section.bike',
     kind: 'plan',
-    window: { from: design.dayOf(design.RIDING) },
-    title: 'M4: Break-in',
-    purpose: 'Ride the break-in once the roads are clear, and service after.',
+    title: 'The whole bike',
+    purpose: 'The whole bike: the jobs that belong to no one part.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
+      { call: 'record.as-found' },
+      { call: 'docs.work-log' },
+      { call: 'docs.photo-index' },
+      { call: 'parts.list' },
+      { call: 'parts.order' },
+      { call: 'start.checklist' },
+      { call: 'start.first' },
       { call: 'ride.break-in' },
       { call: 'service.post-break-in' },
+      { call: 'check.success' },
+      { call: 'docs.finalize' },
     ],
     checks: [
-      'Break-in done and the post-break-in service complete.',
+      'Every job here is done.',
     ],
     safety: [],
     estimate: { hours: 0 },

@@ -6,16 +6,24 @@ shown in 3D on any day of the work.
 | Folder | What is in it |
 |---|---|
 | `engine/` | The procedures engine: checks, paper runs, costs, the day-by-day schedule and the Instructions page. See [engine/README.md](engine/README.md). |
-| `project/` | The YL1 as a project for the engine: the parts and specs (`design.js`), the tools and parts (`catalog.js`), and one file per procedure. |
+| `project/` | The YL1 as a project for the engine: the sections, parts and specs (`design.js`), the tools and parts (`catalog.js`), and one file per procedure. |
 | `bike/` | The 3D bike with the day slider and the photos. |
 | `media/photos/` | The strip-down photos, resized to 1600 px. `media/photos.js` lists them with their captions. |
 | `docs/` | The spec reference, the requirements, the backlog and the best-practice guides. |
 | `tests/` | Engine, project and page tests. |
 
+## The plan
+
+The plan is built like the bike. `plan.yl1` calls one plan per section of the bike, each section
+calls one plan per part, and each part plan holds the jobs done to that part: take it off, assess
+it, rebuild it, put it back. Jobs that span parts sit in their section. Where a part still needs
+work written, it has an open job that says what needs deciding. Jobs in different parts run side
+by side, and `after` holds a job until the jobs it needs are done.
+
 ## The timeline
 
 The strip-down runs in the order of its photos, and each photo in `media/photos.js` names the
-job it shows. The plan from the backlog, milestones M1 to M5, runs from 3 October 2026 on four
+job it shows. The rest of the work runs from 3 October 2026 on four
 hours each weekend day and an hour and a half each weekday evening. Break-in waits for
 1 May 2027. Hours and prices are estimates.
 

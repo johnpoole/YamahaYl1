@@ -4,6 +4,7 @@
   const procedure = {
     id: 'record.as-found',
     kind: 'task',
+    oneJobADay: true,
     removes: ['tank', 'seat', 'side-covers'],
     title: 'Photograph the bike as found',
     purpose: 'Record every system before anything is disturbed, so reassembly has a reference. Backlog B-010.',

@@ -5,7 +5,7 @@
     id: 'fork.remove',
     kind: 'task',
     removes: ['front-end'],
-    after: ['strip.wheels'],
+    after: ['strip.front-wheel'],
     title: 'Take the forks off',
     purpose: 'The fork seals and oil need changing.',
     requires: { tools: ['sockets', 'wrenches'], materials: [], skills: [] },

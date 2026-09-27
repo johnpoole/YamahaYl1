@@ -4,7 +4,8 @@
   const procedure = {
     id: 'engine.remove',
     kind: 'task',
-    removes: ['engine', 'exhaust'],
+    oneJobADay: true,
+    removes: ['bottom-end', 'gearbox', 'clutch', 'autolube', 'exhaust'],
     after: ['strip.carbs', 'shop.stand'],
     title: 'Take the engine out',
     purpose: 'The cases have to come apart for the crank seals.',

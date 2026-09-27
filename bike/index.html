@@ -136,7 +136,13 @@ try {
   const Dz = window.YL1Design, PHOTOS = window.YL1Photos;
   if (!Dz) throw new Error('../project/design.js did not load: YL1Design is missing.');
   if (!PHOTOS) throw new Error('../media/photos.js did not load: YL1Photos is missing.');
-  const PARTS = Dz.PARTS;
+  const PARTS = Dz.PARTS, SECTIONS = Dz.SECTIONS;
+  // The 3D bike draws groups; each part of the design names the group it shows in.
+  const GROUPS = new Map();
+  for (const [id, part] of Object.entries(PARTS)) {
+    if (!part || typeof part.draw !== 'string') throw new Error(`project/design.js: part "${id}" names no draw group`);
+    GROUPS.set(part.draw, [...(GROUPS.get(part.draw) || []), id]);
+  }
 
   // ---------- scene ----------
   const host = document.getElementById('viewer');
@@ -332,7 +338,7 @@ try {
   let partOpen = null, partBefore = null;
   function beginPart(id) {
     if (partOpen) throw new Error(`3D view: part "${partOpen}" is still open when "${id}" begins`);
-    if (!(id in PARTS)) throw new Error(`3D view: "${id}" is not a part in project/design.js`);
+    if (!GROUPS.has(id)) throw new Error(`3D view: "${id}" is not a draw group of any part in project/design.js`);
     partOpen = id;
     partBefore = new Set();
     scene.traverse((o) => partBefore.add(o));
@@ -605,7 +611,7 @@ try {
   target = bike;
   label('stand', 'Work stand', 0.05, 0.1, 0.18);
 
-  for (const id of Object.keys(PARTS)) if (!partObjs.has(id)) throw new Error(`3D view: the part "${id}" in project/design.js is not drawn`);
+  for (const id of GROUPS.keys()) if (!partObjs.has(id)) throw new Error(`3D view: the draw group "${id}" in project/design.js is not drawn`);
 
   // ---------- part states ----------
   function setFinish(objs, finish) {
@@ -688,7 +694,11 @@ try {
     }
     function applyDay(i) {
       const v = stops[i];
-      showStates((id) => timeline.stateOn(id, v));
+      // A group is off if any of its parts is off, rebuilt once all of them are, and as found otherwise.
+      showStates((group) => {
+        const states = GROUPS.get(group).map((id) => timeline.stateOn(id, v));
+        return states.includes('off') ? 'off' : states.every((x) => x === 'restored') ? 'restored' : 'original';
+      });
       dayDate.textContent = `Day ${i + 1} of ${stops.length}`;
       nextBtn.disabled = i >= stops.length - 1;
 
@@ -709,10 +719,13 @@ try {
       const ids = Object.keys(PARTS);
       const count = (s) => ids.filter((id) => id !== 'stand' && timeline.stateOn(id, v) === s).length;
       dayText.textContent = `${count('restored')} parts rebuilt, ${count('off')} off the bike, ${count('original')} as found.`;
-      partsTable.innerHTML = ids.map((id) => {
-        const s = timeline.stateOn(id, v);
-        const text = id === 'stand' ? (s === 'restored' ? 'In use' : 'Not in use') : STATE[s];
-        return `<tr><td>${esc(PARTS[id])}</td><td class="st-${s}">${text}</td></tr>`;
+      partsTable.innerHTML = Object.entries(SECTIONS).map(([sid, sname]) => {
+        const here = ids.filter((id) => PARTS[id].section === sid);
+        return here.length ? `<tr><th colspan="2" align="left">${esc(sname)}</th></tr>` + here.map((id) => {
+          const s = timeline.stateOn(id, v);
+          const text = id === 'stand' ? (s === 'restored' ? 'In use' : 'Not in use') : STATE[s];
+          return `<tr><td>${esc(PARTS[id].name)}</td><td class="st-${s}">${text}</td></tr>`;
+        }).join('') : '';
       }).join('');
     }
     dayInput.addEventListener('input', () => applyDay(+dayInput.value));
@@ -745,7 +758,7 @@ try {
         jumps.appendChild(b);
       };
       jump('As found', 0);
-      for (const id of Pj.schedule.milestones) jump(reg.get(id).title.replace(/,.*$/, ''), result.finish(id));
+      for (const [id, label] of Pj.schedule.milestones) jump(label, result.finish(id));
       show(stops.length - 1);
     }).catch(showError);
   }

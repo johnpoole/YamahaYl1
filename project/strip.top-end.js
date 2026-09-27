@@ -4,6 +4,7 @@
   const procedure = {
     id: 'strip.top-end',
     kind: 'task',
+    oneJobADay: true,
     removes: ['top-end'],
     after: ['engine.remove'],
     title: 'Take off the heads and cylinders',

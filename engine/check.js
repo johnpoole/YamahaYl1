@@ -6,14 +6,20 @@
 //     cat     catalog { KIT, TOOLS, MATERIALS }
 //     root    id of the one top-level plan
 //     params  design numbers that {placeholders} in the text may quote
-//     parts   optional { id: name } of the design's parts; each must be built by a procedure
-//             the plan runs, and a procedure may build or remove only parts on this list
+//     parts   optional { id: name } or { id: { name, section } } of the design's parts; each must
+//             be built by a procedure the plan runs, and a procedure may build or remove only
+//             parts on this list
+//     sections optional { id: name }. With sections, the plan is shaped like the design: plan
+//             section.<s> calls plan part.<p> for each of its parts, every part plan holds at least
+//             one job, and a job that builds a part is run from that part's section
 (function (root) {
   'use strict';
 
-  const L = (typeof module !== 'undefined' && module.exports) ? require('./lib.js') : root.ProcLib;
+  const node = typeof module !== 'undefined' && module.exports;
+  const L = node ? require('./lib.js') : root.ProcLib;
+  const S = node ? require('./schedule.js') : root.ProcSchedule;
 
-  function checkProject({ reg, cat, root: top, params = {}, parts }) {
+  function checkProject({ reg, cat, root: top, params = {}, parts, sections }) {
     const e = [];
     const add = (list) => list.forEach((x) => e.push(x));
 
@@ -76,12 +82,32 @@
       }
     }
 
-    // A procedure that comes after another only makes sense if the other runs first in the plan.
-    const exitAt = new Map(), enterAt = new Map();
-    r.events.forEach((x, i) => { if (x.type === 'exit' && !exitAt.has(x.id)) exitAt.set(x.id, i); if (x.type === 'enter' && !enterAt.has(x.id)) enterAt.set(x.id, i); });
+    // after may name a job anywhere in the plan, but only one the plan runs, and never in a loop.
     for (const p of reg.values()) for (const a of p.after || []) {
-      if (!enterAt.has(p.id)) continue;
-      if (!exitAt.has(a) || exitAt.get(a) > enterAt.get(p.id)) e.push(`${p.id} comes after ${a}, but ${top} does not finish ${a} before starting ${p.id}`);
+      if (reached.has(p.id) && !reached.has(a)) e.push(`${p.id} comes after ${a}, which ${top} never runs`);
+    }
+    const ids = [...reg.keys()].filter((id) => reached.has(id));
+    const loop = S.findLoop(ids.map((id) => (reg.get(id).after || []).map((a) => ids.indexOf(a)).filter((i) => i >= 0)));
+    if (loop) e.push(`these jobs wait on each other in a loop: ${loop.map((i) => ids[i]).join(' → ')}`);
+
+    // With sections, the plan has the shape of the design.
+    if (sections && parts) {
+      const runs = (plan) => (reg.get(plan) ? new Set(L.trace(plan, reg).map((x) => x.id)) : new Set());
+      for (const s of Object.keys(sections)) {
+        const sp = reg.get(`section.${s}`);
+        if (!sp || sp.kind !== 'plan') e.push(`section "${s}" needs a plan with the id section.${s}`);
+      }
+      for (const [id, part] of Object.entries(parts)) {
+        if (!part || !(part.section in sections)) { e.push(`part "${id}" names section ${JSON.stringify(part && part.section)}, which is not a section`); continue; }
+        const pp = reg.get(`part.${id}`), sp = reg.get(`section.${part.section}`);
+        if (!pp || pp.kind !== 'plan') { e.push(`part "${id}" needs a plan with the id part.${id}`); continue; }
+        if (sp && !L.callsOf(sp).includes(pp.id)) e.push(`section.${part.section} does not call part.${id}`);
+        if (!L.callsOf(pp).length) e.push(`part.${id} holds no jobs; give it at least an open one`);
+      }
+      for (const p of reg.values()) for (const b of p.builds || []) {
+        const part = parts[b];
+        if (part && part.section in sections && !runs(`section.${part.section}`).has(p.id)) e.push(`${p.id} builds "${b}", but section.${part.section} does not run it`);
+      }
     }
     for (const id of Object.keys(parts || {})) {
       const by = (builders.get(id) || []).filter((pid) => reached.has(pid));

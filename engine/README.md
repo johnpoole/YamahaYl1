@@ -35,9 +35,21 @@ such as a settled bed, or through `after`. A job with `estimate.waitDays` holds 
 ## Design parts
 
 A procedure may list the parts of the design it builds: `builds: ['walls']`, and the parts it
-takes off: `removes: ['carbs']`. When the project gives its parts as `{ id: name }`, the checker
-makes sure every part is built by something the plan runs and that nothing builds or removes a
-part the design lacks.
+takes off: `removes: ['carbs']`. When the project gives its parts as `{ id: name }` or
+`{ id: { name, section } }`, the checker makes sure every part is built by something the plan runs
+and that nothing builds or removes a part the design lacks.
+
+## A plan shaped like the design
+
+When the project also gives `sections()` as `{ id: name }`, the plan is built like code from the
+design: plan `section.<s>` calls plan `part.<p>` for each of its parts, and each part plan holds
+the jobs done to that part. A job that spans several parts sits in their section's plan. The
+checker fails a part with no plan, a part plan with no jobs, and a job that builds a part from
+outside that part's section.
+
+A task with `status: 'open'` stands for work not yet written: a purpose saying what needs deciding,
+no steps and 0 hours. The Instructions page lists the open tasks together. Once a task has steps,
+it drops the status.
 
 `schedule.partDays(result, reg)` gives, for each part, the day building it started and the day it
 was finished, or null if it was not finished by the end.
@@ -48,20 +60,23 @@ once a job takes it off, `'restored'` once a job builds it. The bike's 3D view u
 
 ## One job a day
 
-A plan with `oneJobADay: true` starts at most one of its jobs on any day, for work done in
-separate sessions. A job that runs past its day carries on the next.
+A plan or task with `oneJobADay: true` starts at most one such job on any day, for work done in
+separate sessions. A job that runs past its day carries on the next. A task may also carry its
+own `window`.
 
 ## Order without a material
 
 `after: ['strip.top-end']` makes a job wait until the named jobs are finished, for order that
-nothing made or used explains, such as measuring the bores once the cylinders are off. The
-checker fails a plan that starts a job before the jobs it comes after are done.
+nothing made or used explains, such as measuring the bores once the cylinders are off. It may
+name any job the plan runs, in any part of the tree. The tree order only sets which ready job goes
+first, so jobs in different parts run side by side. The checker and the scheduler fail jobs that
+wait on each other in a loop.
 
 ## A project
 
 A folder with:
 
-- `project.js` — `{ root, pageTitle, heading, intro, labels, calendar, params(), parts(), schedule }`
+- `project.js` — `{ root, pageTitle, heading, intro, labels, calendar, params(), parts(), sections(), schedule }`
 - `catalog.js` — `{ KIT, TOOLS, MATERIALS }`, built with `engine/catalog.js`
 - `index.js` — the list of procedure ids
 - `<id>.js` — one procedure each
