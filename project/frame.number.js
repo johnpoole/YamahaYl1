@@ -6,7 +6,7 @@
     kind: 'task',
     status: 'open',
     title: 'Read the frame number',
-    purpose: 'Read the frame number off the steering head and record it. It settles whether the bike is a YL1 or a YL1E, which decides the generator parts and the footrest parts.',
+    purpose: 'Read the frame number off the steering head and record it. The footrest parts in the parts list change with the frame number.',
     requires: { tools: [], materials: [], skills: [] },
     produces: { tools: [], materials: [] },
     preconditions: [],

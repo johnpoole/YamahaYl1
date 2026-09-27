@@ -2935,8 +2935,7 @@
     "name": "D.C. GENERATOR ASSEMBLY",
     "notes": "",
     "part": "ignition",
-    "oneOf": true,
-    "variant": "YL1"
+    "oneOf": true
    },
    {
     "ref": "1",
@@ -2945,8 +2944,7 @@
     "name": "ARMATURE",
     "notes": "",
     "part": "ignition",
-    "oneOf": true,
-    "variant": "YL1"
+    "oneOf": true
    },
    {
     "ref": "2",
@@ -2954,8 +2952,7 @@
     "qty": 1,
     "name": "STATOR ASSEMBLY",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "3",
@@ -2963,8 +2960,7 @@
     "qty": 2,
     "name": "CONTACT BREAKER ASS'Y",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "4",
@@ -2972,8 +2968,7 @@
     "qty": 1,
     "name": "CONDENSER",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "5",
@@ -2981,8 +2976,7 @@
     "qty": 1,
     "name": "CONDENSER",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "6",
@@ -2990,8 +2984,7 @@
     "qty": 1,
     "name": "LUBRICATOR",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "7",
@@ -2999,8 +2992,7 @@
     "qty": 1,
     "name": "PLATE, TIMING",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "8",
@@ -3008,8 +3000,7 @@
     "qty": 1,
     "name": "FIXTURE, TIMING PLATE",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "9",
@@ -3017,8 +3008,7 @@
     "qty": 2,
     "name": "BRUSH",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "10",
@@ -3026,8 +3016,7 @@
     "qty": 2,
     "name": "SPRING, BRUSH",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "11",
@@ -3035,8 +3024,7 @@
     "qty": 13,
     "name": "SCREW, PAN HEAD",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "12",
@@ -3044,8 +3032,7 @@
     "qty": 8,
     "name": "YBS66-4 WASHER, PLAIN",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "13",
@@ -3053,8 +3040,7 @@
     "qty": 13,
     "name": "WASHER, SPRING",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "14",
@@ -3062,8 +3048,7 @@
     "qty": 1,
     "name": "WASHER,PLAIN",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "15",
@@ -3071,8 +3056,7 @@
     "qty": 1,
     "name": "WASHER, SPRING",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "16",
@@ -3080,8 +3064,7 @@
     "qty": 1,
     "name": "SCREW, PAN HEAD USED ON (168-83310-20) (168-83330-20)",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "17",
@@ -3089,8 +3072,7 @@
     "qty": 1,
     "name": "CAM",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "18",
@@ -3098,8 +3080,7 @@
     "qty": 1,
     "name": "BOLT (70)",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "19",
@@ -3107,8 +3088,7 @@
     "qty": 1,
     "name": "YBS67-8 WASHER, SPRING",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "20",
@@ -3116,8 +3096,7 @@
     "qty": 8,
     "name": "SCREW, STATOR",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
+    "part": "ignition"
    },
    {
     "ref": "21",
@@ -3125,295 +3104,7 @@
     "qty": 2,
     "name": "YBS67-5 WASHER, SPRING",
     "notes": "",
-    "part": "ignition",
-    "variant": "YL1"
-   }
-  ]
- },
- {
-  "code": "B-09",
-  "title": "GENERATOR (YL1E)",
-  "rows": [
-   {
-    "ref": "1",
-    "code": "1998110010",
-    "qty": 1,
-    "name": "STARTER GENERATOR ASSEMBLY",
-    "notes": "",
-    "part": "ignition",
-    "oneOf": true,
-    "variant": "YL1E"
-   },
-   {
-    "ref": "1",
-    "code": "1768115510",
-    "qty": 1,
-    "name": "ARMATURE",
-    "notes": "",
-    "part": "ignition",
-    "oneOf": true,
-    "variant": "YL1E"
-   },
-   {
-    "ref": "2",
-    "code": "1998111010",
-    "qty": 1,
-    "name": "STATOR ASSEMBLY",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "3",
-    "code": "1328122110",
-    "qty": 2,
-    "name": "CONTACT BREAKER ASS'Y",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "4",
-    "code": "9299004200",
-    "qty": 4,
-    "name": "YBS66-4 WASHER, PLAIN",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "5",
-    "code": "9290104100",
-    "qty": 4,
-    "name": "WASHER, SPRING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "6",
-    "code": "9250304008",
-    "qty": 4,
-    "name": "SCREW, PAN HEAD",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "7",
-    "code": "1328122690",
-    "qty": 1,
-    "name": "CONDENSER",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "8",
-    "code": "1328122590",
-    "qty": 1,
-    "name": "CONDENSER",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "9",
-    "code": "9290104100",
-    "qty": 2,
-    "name": "WASHER, SPRING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "10",
-    "code": "9250304008",
-    "qty": 2,
-    "name": "SCREW, PAN HEAD",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "11",
-    "code": "1338113310",
-    "qty": 1,
-    "name": "FIXTURE, TIMING PLATE",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "12",
-    "code": "1338113210",
-    "qty": 1,
-    "name": "PLATE, TIMING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "13",
-    "code": "9299004200",
-    "qty": 5,
-    "name": "YBS66-4 WASHER, PLAIN",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "14",
-    "code": "9290104100",
-    "qty": 5,
-    "name": "WASHER, SPRING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "15",
-    "code": "9250304008",
-    "qty": 5,
-    "name": "SCREW, PAN HEAD",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "16",
-    "code": "9299005200",
-    "qty": 1,
-    "name": "YBS66-5 WASHER, PLAIN",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "17",
-    "code": "9299005100",
-    "qty": 1,
-    "name": "YBS67-5 WASHER, SPRING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "18",
-    "code": "9250305008",
-    "qty": 1,
-    "name": "SCREW, PAN HEAD",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "19",
-    "code": "1418111110",
-    "qty": 4,
-    "name": "BRUSH",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "20",
-    "code": "9290104100",
-    "qty": 4,
-    "name": "WASHER, SPRING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "21",
-    "code": "9250304008",
-    "qty": 4,
-    "name": "SCREW, PAN HEAD",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "22",
-    "code": "1418111310",
-    "qty": 4,
-    "name": "SPRING, BRUSH",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "23",
-    "code": "1328123110",
-    "qty": 1,
-    "name": "LUBRICATOR",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "24",
-    "code": "9290104100",
-    "qty": 1,
-    "name": "WASHER, SPRING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "25",
-    "code": "9250304008",
-    "qty": 1,
-    "name": "SCREW, PAN HEAD",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "26",
-    "code": "9299005100",
-    "qty": 2,
-    "name": "YBS67-5 WASHER, SPRING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "27",
-    "code": "1328143510",
-    "qty": 2,
-    "name": "SCREW, STATOR",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "28",
-    "code": "1338115310",
-    "qty": 1,
-    "name": "GOVERNOR ASSEMBLY",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "29",
-    "code": "9299008100",
-    "qty": 1,
-    "name": "YBS67-8 WASHER, SPRING",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
-   },
-   {
-    "ref": "30",
-    "code": "1338115210",
-    "qty": 1,
-    "name": "BOLT",
-    "notes": "",
-    "part": "ignition",
-    "variant": "YL1E"
+    "part": "ignition"
    }
   ]
  },

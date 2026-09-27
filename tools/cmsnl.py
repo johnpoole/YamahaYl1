@@ -1,6 +1,6 @@
 """Build project/cmsnl.js from the Yamaha parts list for the YL1 at CMSNL.
 
-Fetches every diagram of the YL1 Twinjet 1966-1967 USA parts list, reads each row's reference,
+Fetches every diagram of the YL1 Twinjet 1966-1967 USA parts list that fits this bike, a YL1, reads each row's reference,
 order code, name, quantity and notes, and places the row under a part of the design by the
 table below. Stops on any row the table does not place.
 
@@ -17,11 +17,12 @@ from pathlib import Path
 BASE = 'https://www.cmsnl.com/yamaha-yl1-twinjet-1966-1967-usa_model8301/partslist/'
 OUT = Path(__file__).resolve().parent.parent / 'project' / 'cmsnl.js'
 
+# The bike is a YL1, so the YL1E generator diagram, B-09, is left out.
 DIAGRAMS = {
     'A-04': 'CRANKCASE', 'A-05': 'CRANKCASE COVER', 'A-06': 'CRANK - PISTON', 'A-08': 'CLUTCH',
     'A-09': 'TRANSMISSION', 'A-11': 'SHIFTER 1', 'A-12': 'SHIFTER 2',
     'B-01': 'KICK', 'B-02': 'AIR CLEANER', 'B-03': 'CARBURETOR', 'B-05': 'MUFFLER', 'B-06': 'OIL PUMP',
-    'B-08': 'GENERATOR (YL1)', 'B-09': 'GENERATOR (YL1E)',
+    'B-08': 'GENERATOR (YL1)',
     'C-01': 'FRAME', 'C-02': 'REAR ARM AND CHAIN CASE', 'C-03': 'STAND - BRAKE PEDAL', 'C-04': 'HANDLE & FRONT FENDER',
     'C-06': 'FRONT FORK', 'C-08': 'FUEL TANK', 'C-09': 'OIL TANK', 'C-10': 'SEAT - CARRIER',
     'C-11': 'FRONT WHEEL', 'C-12': 'REAR WHEEL',
@@ -42,7 +43,7 @@ PLACE = {
     'A-06': [(refs('1-30'), 'bottom-end'), (refs('31-34'), 'top-end')],
     'A-08': 'clutch', 'A-09': 'gearbox', 'A-11': 'gearbox', 'A-12': 'gearbox', 'B-01': 'gearbox',
     'B-02': 'air-cleaner', 'B-03': 'carbs', 'B-05': 'exhaust', 'B-06': 'autolube',
-    'B-08': 'ignition', 'B-09': 'ignition',
+    'B-08': 'ignition',
     'C-01': [(refs('2-11', '28-34'), 'frame'), (refs('12-16', '19-22'), 'side-covers'), (refs('23'), 'frame'), (refs('24-27'), 'rear-suspension')],
     'C-02': [(refs('2-8'), 'rear-suspension'), (refs('9-11', '91'), 'main-stand'), (refs('12-17'), 'chain')],
     'C-03': 'main-stand',
@@ -53,8 +54,6 @@ PLACE = {
     'D-04': [(refs('1-12'), 'charging'), (refs('13-22', '33-36', '131'), 'wiring'), (refs('23-26'), 'ignition'), (refs('27-32', '37'), 'lights')],
     'E-01': 'lights',
 }
-
-VARIANT = {'B-08': 'YL1', 'B-09': 'YL1E'}
 
 
 def fetch(code):
@@ -109,8 +108,6 @@ def main():
             # A reference listed more than once is a choice between parts: one of them fits.
             if seen[r['ref']] > 1 or 'ALTERNATE' in r['notes']:
                 r['oneOf'] = True
-            if code in VARIANT:
-                r['variant'] = VARIANT[code]
         diagrams.append({'code': code, 'title': title, 'rows': rows})
         print(f'{code} {title}: {len(rows)} rows', file=sys.stderr)
         time.sleep(2)

@@ -125,7 +125,7 @@
             const cell = (x) => `<td style="padding:2px 8px 2px 0;vertical-align:top">${x}</td>`;
             return `<h2>${esc((P.labels && P.labels.components) || 'Components')}</h2>
           <div class="box" style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><tr><th align="left">Diagram</th><th align="left">Ref</th><th align="left">Name</th><th align="left">Qty</th><th align="left">Order code</th><th align="left">Notes</th></tr>${rows.map((r) =>
-              `<tr>${cell(esc(`${r.diagram} ${r.diagramTitle}`))}${cell(esc(r.ref))}${cell(esc(r.name))}${cell(esc(r.qty))}${cell(esc(r.code))}${cell(esc([r.oneOf ? 'one of' : '', r.variant || '', r.notes].filter(Boolean).join(' · ')))}</tr>`).join('')}</table></div>`;
+              `<tr>${cell(esc(`${r.diagram} ${r.diagramTitle}`))}${cell(esc(r.ref))}${cell(esc(r.name))}${cell(esc(r.qty))}${cell(esc(r.code))}${cell(esc([r.oneOf ? 'one of' : '', r.notes].filter(Boolean).join(' · ')))}</tr>`).join('')}</table></div>`;
           })()}
           ${p.checks.length ? `<h2>Done when</h2>${ul(p.checks.map(T))}` : ''}
           ${p.safety.length ? `<h2>Safety</h2><ul class="safety">${p.safety.map((s) => `<li>${T(s)}</li>`).join('')}</ul>` : ''}

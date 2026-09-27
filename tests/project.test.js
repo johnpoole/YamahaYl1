@@ -127,9 +127,9 @@ test('every part of the bike sits in a section and has its own plan, and every o
 });
 
 test('every row of the Yamaha parts list sits under a part of the design, and every part but the work stand has rows', () => {
-  assert.equal(CMSNL.length, 27);
+  assert.equal(CMSNL.length, 26);
   const rows = CMSNL.flatMap((d) => d.rows.map((r) => ({ ...r, diagram: d.code })));
-  assert.equal(rows.length, 800);
+  assert.equal(rows.length, 769);
   for (const r of rows) assert.ok(r.part in D.PARTS, `${r.diagram} ${r.ref} ${r.name} is under "${r.part}", which is not a part`);
   for (const id of Object.keys(D.PARTS)) {
     if (id === 'stand') continue;
@@ -139,11 +139,11 @@ test('every row of the Yamaha parts list sits under a part of the design, and ev
   assert.equal(project.components('plan.yl1'), null);
 });
 
-test('rows that are a choice between parts are marked, and the two generators are marked by model', () => {
+test('rows that are a choice between parts are marked, and only the YL1 generator is listed', () => {
   const rows = CMSNL.flatMap((d) => d.rows.map((r) => ({ ...r, diagram: d.code })));
   const jets = rows.filter((r) => r.diagram === 'B-03' && /JET,\s*MAIN/.test(r.name));
   assert.ok(jets.length > 1 && jets.every((r) => r.oneOf), 'the main jets are one of several');
   assert.ok(rows.filter((r) => /ALTERNATE/.test(r.notes)).every((r) => r.oneOf));
-  assert.ok(CMSNL.find((d) => d.code === 'B-08').rows.every((r) => r.variant === 'YL1'));
-  assert.ok(CMSNL.find((d) => d.code === 'B-09').rows.every((r) => r.variant === 'YL1E'));
+  assert.ok(CMSNL.some((d) => d.code === 'B-08'), 'the YL1 generator diagram is listed');
+  assert.ok(!CMSNL.some((d) => d.code === 'B-09'), 'the YL1E generator diagram is not');
 });

@@ -19,8 +19,7 @@ The plan is built like the bike. `plan.yl1` calls one plan per section of the bi
 calls one plan per part, and each part plan holds the jobs done to that part: take it off, assess
 it, rebuild it, put it back. Jobs that span parts sit in their section. Where a part still needs
 work written, it has an open job that says what needs deciding. Each part's page lists its rows
-from Yamaha's parts list for the YL1, with the order codes. The parts list has two generator
-diagrams, one for the YL1 and one for the YL1E. Which one fits waits on the frame number. Jobs in different parts run side
+from Yamaha's parts list for the YL1, with the order codes. Jobs in different parts run side
 by side, and `after` holds a job until the jobs it needs are done.
 
 ## The timeline
