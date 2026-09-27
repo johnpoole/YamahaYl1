@@ -19,7 +19,7 @@ const run = () => S.run(project.root, reg, C, L, project.calendar);
 const STRIP = [...new Set(PHOTOS.map((p) => p.job))];
 
 test('the index lists every procedure file and nothing else', () => {
-  const others = ['catalog', 'cmsnl', 'design', 'index', 'project'];
+  const others = ['catalog', 'cmsnl', 'design', 'done', 'index', 'project'];
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.js')).map((f) => f.slice(0, -3)).filter((f) => !others.includes(f)).sort();
   assert.deepEqual([...IDS].sort(), files);
 });
@@ -158,4 +158,25 @@ test('rows that name a serial range are marked for bike number 47603', () => {
   assert.equal(fit('A-06', '15', 'METAL, FILLER ~513353')[0], undefined, 'a six-digit YL1E number is not read as a range');
   // Rows at a shared reference with other names are left alone: the shim at the main axle's reference.
   assert.ok(fit('A-09', '6', 'SHIM, DRIVE AXLE').every((f) => f === undefined));
+});
+
+test('within each plan, no job is listed before a job it waits on', () => {
+  const waits = new Map();
+  const all = (id) => {
+    if (waits.has(id)) return waits.get(id);
+    const s = new Set(); waits.set(id, s);
+    for (const a of reg.get(id).after || []) { s.add(a); for (const b of all(a)) s.add(b); }
+    return s;
+  };
+  for (const p of reg.values()) {
+    if (p.kind !== 'plan') continue;
+    const jobs = L.callsOf(p).filter((id) => reg.get(id).kind === 'task');
+    jobs.forEach((a, i) => jobs.slice(i + 1).forEach((b) => assert.ok(!all(a).has(b), `${p.id} lists ${a} before ${b}, which it waits on`)));
+  }
+});
+
+test('every job marked done is a job in the plan', () => {
+  const done = project.done();
+  assert.ok(done.length > 0);
+  for (const id of done) assert.equal(reg.get(id) && reg.get(id).kind, 'task', `${id} in project/done.js is not a job`);
 });

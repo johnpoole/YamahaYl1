@@ -63,7 +63,8 @@
           ${problems.length ? `<div class="err">Problems in the instructions:\n${esc(problems.join('\n'))}</div>` : ''}
           <div class="list">${groups.map((k) => {
             const ps = [...reg.values()].filter((p) => p.kind === k && p.status !== 'open');
-            return ps.length ? `<div class="group"><h2>${KIND_NAMES[k]}${k === 'skill' ? 's' : k === 'plan' ? 's' : ''}</h2><ul>${ps.map((p) => `<li>${link(p.id)} <span class="src">— ${T(p.purpose)}</span></li>`).join('')}</ul></div>` : '';
+            const done = new Set(P.done ? P.done() : []);
+            return ps.length ? `<div class="group"><h2>${KIND_NAMES[k]}${k === 'skill' ? 's' : k === 'plan' ? 's' : ''}</h2><ul>${ps.map((p) => `<li>${link(p.id)}${done.has(p.id) ? ' <span class="chip">Done</span>' : ''} <span class="src">— ${T(p.purpose)}</span></li>`).join('')}</ul></div>` : '';
           }).join('')}${(() => {
             const open = [...reg.values()].filter((p) => p.status === 'open');
             return open.length ? `<div class="group"><h2>Open (${open.length})</h2><ul>${open.map((p) => `<li>${link(p.id)} <span class="src">— ${T(p.purpose)}</span></li>`).join('')}</ul></div>` : '';
@@ -89,7 +90,7 @@
         const bought = [...n.boughtTools.map(toolName), ...n.boughtMaterials.map((m) => matName(m))];
         app.innerHTML = `
           <p><a href="#">All instructions</a></p>
-          <div class="head"><span class="chip">${p.status === 'open' ? 'Open' : KIND_NAMES[p.kind]}</span><span class="id">${esc(p.id)}</span></div>
+          <div class="head"><span class="chip">${p.status === 'open' ? 'Open' : KIND_NAMES[p.kind]}</span>${P.done && P.done().includes(p.id) ? '<span class="chip">Done</span>' : ''}<span class="id">${esc(p.id)}</span></div>
           <h1>${T(p.title)}</h1>
           <p class="sub">${T(p.purpose)}</p>
           ${by.length ? `<p class="src">Called by: ${by.map(link).join(', ')}</p>` : ''}

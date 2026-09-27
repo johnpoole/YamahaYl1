@@ -116,6 +116,7 @@ a{color:var(--ember)}
 <script src="../project/design.js"></script>
 <script src="../project/catalog.js"></script>
 <script src="../project/index.js"></script>
+<script src="../project/done.js"></script>
 <script src="../project/project.js"></script>
 <script src="../media/photos.js"></script>
 <script type="module">
@@ -686,7 +687,7 @@ try {
     let photoPick = null;
 
     // stops: the schedule's days with work, in order. Day n on the page is stops[n - 1].
-    let result = null, timeline = null, reg = null, stops = null, photoStop = null;
+    let result = null, timeline = null, reg = null, stops = null, photoStop = null, doneJobs = null;
     function show(i) {
       if (!(Number.isInteger(i) && i >= 0 && i < stops.length)) throw new Error(`day ${i + 1} is not a day of work; there are ${stops.length}`);
       dayInput.value = String(i);
@@ -714,7 +715,7 @@ try {
 
       const day = result.days[v];
       const did = day.did.filter((x) => reg.get(x.id).kind !== 'plan');
-      jobsList.innerHTML = did.map((x) => `<li><a href="../project/#${esc(x.id)}">${esc(reg.get(x.id).title)}</a>, ${x.hours.toFixed(1)} h${result.done[result.jobs.findIndex((j) => j.id === x.id)] === v ? ', finished' : ''}</li>`).join('');
+      jobsList.innerHTML = did.map((x) => `<li><a href="../project/#${esc(x.id)}">${esc(reg.get(x.id).title)}</a>, ${x.hours.toFixed(1)} h${result.done[result.jobs.findIndex((j) => j.id === x.id)] === v ? ', finished' : ''}${doneJobs.has(x.id) ? ' <strong>· done</strong>' : ''}</li>`).join('');
 
       const ids = Object.keys(PARTS);
       const count = (s) => ids.filter((id) => id !== 'stand' && timeline.stateOn(id, v) === s).length;
@@ -735,6 +736,7 @@ try {
     if (!Pj || !PL || !PS || !window.ProcLoad || !window.Catalog || !window.PROCEDURE_IDS) throw new Error('the rebuild schedule scripts did not load');
     window.ProcLoad.procedures(window.PROCEDURE_IDS, '../project/').then(() => {
       reg = PL.byId(window.PROCEDURES);
+      doneJobs = new Set(Pj.done());
       result = PS.run(Pj.root, reg, window.Catalog, PL, Pj.calendar);
       if (result.unfinished.length) throw new Error(`the schedule leaves jobs unfinished: ${result.unfinished.join(', ')}`);
       timeline = PS.partTimeline(result, reg);

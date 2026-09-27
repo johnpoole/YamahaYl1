@@ -55,6 +55,12 @@
     },
     parts: () => design.PARTS,
     sections: () => design.SECTIONS,
+    // The jobs whose issues are closed, from project/done.js.
+    done: () => {
+      const list = node ? require('./done.js') : root.YL1Done;
+      if (!list) throw new Error('project/done.js did not load before the done jobs were needed');
+      return list;
+    },
     // The Yamaha parts list rows for a part plan, part.<id>, or null for any other procedure.
     components: (planId) => {
       const m = /^part\.(.+)$/.exec(planId);

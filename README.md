@@ -7,7 +7,7 @@ shown in 3D on any day of the work.
 |---|---|
 | `engine/` | The procedures engine: checks, paper runs, costs, the day-by-day schedule and the Instructions page. See [engine/README.md](engine/README.md). |
 | `project/` | The YL1 as a project for the engine: the sections, parts and specs (`design.js`), the tools and parts (`catalog.js`), Yamaha's parts list (`cmsnl.js`), and one file per procedure. |
-| `tools/` | `cmsnl.py`, which rebuilds `project/cmsnl.js` from the parts list at CMSNL. |
+| `tools/` | `cmsnl.py`, which rebuilds `project/cmsnl.js` from the parts list at CMSNL, and `issues.js`, which keeps the GitHub issues in line with the plan. |
 | `bike/` | The 3D bike with the day slider and the photos. |
 | `media/photos/` | The strip-down photos, resized to 1600 px. `media/photos.js` lists them with their captions. |
 | `docs/` | The spec reference, the requirements, the backlog and the best-practice guides. |
@@ -32,6 +32,20 @@ hours each weekend day and an hour and a half each weekday evening. Break-in wai
 Each procedure that takes a part off lists it in `removes`, and each that puts it back lists it in
 `builds`. The bike page shows a part as found until a job takes it off, hides it while it is off,
 and shows it rebuilt once the job that puts it back is finished.
+
+## Issues
+
+Every job has a GitHub issue, under its part, under its section, under
+[the rebuild](https://github.com/johnpoole/YamahaYl1/issues/1). A job that comes after another is
+blocked by it. Close a job's issue when the job is done, and put notes and photos in its comments.
+The issue text is rewritten from the plan, so it is no place for notes.
+
+```bash
+node tools/issues.js
+```
+
+This brings the issues in line with the plan and writes the closed jobs to `project/done.js`, which
+the pages show as done. A closed issue shows on the pages once this has run and been pushed.
 
 ## Run it
 
