@@ -10,7 +10,7 @@
     produces: { tools: [], materials: [] },
     preconditions: [],
     steps: [
-      { call: 'plan.strip-down', note: 'November 2024 to January 2025, as photographed' },
+      { call: 'plan.strip-down', note: 'As photographed' },
       { call: 'plan.m1-assessment' },
       { call: 'plan.m2-engine' },
       { call: 'plan.chassis-electrics' },

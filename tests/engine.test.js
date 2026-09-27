@@ -123,15 +123,6 @@ test('the part timeline gives each part as found, off and restored in the order 
   assert.deepEqual(days, [...days].sort((a, b) => a - b));
 });
 
-test('calendar dates give single days their own hours, and a bad date is refused', () => {
-  const cal = { start: '2027-01-04', days: 10, hours: { type: 'fixed', hours: 1.5 }, dates: { '2027-01-05': 4 } };
-  assert.deepEqual([0, 1, 2].map((d) => S.workHours(cal, d).work), [1.5, 4, 1.5]);
-  const reg = fresh().reg;
-  assert.throws(() => S.run(project.root, reg, C, L, { ...cal, dates: { '2027-02-30': 4 } }), /"2027-02-30", which is not a date/);
-  assert.throws(() => S.run(project.root, reg, C, L, { ...cal, dates: { '2026-12-31': 4 } }), /2026-12-31, outside the calendar's 2027-01-04 to 2027-01-13/);
-  assert.throws(() => S.run(project.root, reg, C, L, { ...cal, dates: { '2027-01-05': '4' } }), /calendar\.dates\["2027-01-05"\] must be hours/);
-});
-
 test('the page loader puts the procedures in index order whatever order the files arrive in', async () => {
   const vm = require('node:vm');
   const fs = require('node:fs');
@@ -150,4 +141,17 @@ test('the page loader puts the procedures in index order whatever order the file
     return ctx.PROCEDURES.map((p) => p.id);
   };
   assert.deepEqual(await loadIn(['a.one', 'b.two', 'c.three'], ['c.three', 'a.one', 'b.two']), ['a.one', 'b.two', 'c.three']);
+});
+
+test('a plan with oneJobADay starts at most one of its jobs a day, and without it jobs share a day', () => {
+  const firstDays = (reg) => {
+    const r = S.run(project.root, reg, C, L, project.calendar);
+    const ids = reg.get('plan.strip-down').steps.map((s) => s.call);
+    return r.days.map((d) => d.did.filter((x) => ids.includes(x.id) && !r.days.slice(0, d.day).some((e) => e.did.some((y) => y.id === x.id))).length);
+  };
+  assert.ok(Math.max(...firstDays(fresh().reg)) <= 1);
+  const reg = fresh().reg;
+  delete reg.get('plan.strip-down').oneJobADay;
+  assert.ok(Math.max(...firstDays(reg)) > 1, 'without oneJobADay the short strip-down jobs share an evening');
+  assert.match(problems(({ reg }) => { reg.get('strip.carbs').oneJobADay = true; }), /only a plan can have oneJobADay/);
 });

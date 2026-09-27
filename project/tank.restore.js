@@ -4,7 +4,7 @@
   const procedure = {
     id: 'tank.restore',
     kind: 'task',
-    after: ['strip.tank-seat', 'parts.order'],
+    after: ['parts.order'],
     title: 'Clean and seal the fuel tank',
     purpose: 'No rust left to reach the carbs.',
     requires: { tools: [], materials: [{ id: 'tank-kit', qty: 1 }], skills: ['skill.fuel-safety'] },

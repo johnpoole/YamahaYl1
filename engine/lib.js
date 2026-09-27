@@ -86,6 +86,10 @@
       }
     }
     if (p.estimate && p.estimate.afterDark !== undefined && typeof p.estimate.afterDark !== 'boolean') e.push(`${at}: estimate.afterDark must be true or false`);
+    if (p.oneJobADay !== undefined) {
+      if (p.kind !== 'plan') e.push(`${at}: only a plan can have oneJobADay`);
+      if (typeof p.oneJobADay !== 'boolean') e.push(`${at}: oneJobADay must be true or false`);
+    }
     if (p.window !== undefined) {
       const w = p.window;
       if (p.kind !== 'plan') e.push(`${at}: only a plan can have a window`);

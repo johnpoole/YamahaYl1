@@ -29,8 +29,6 @@
       start: design.START,
       days: 920,
       hours: { type: 'weekly', hours: [4, 1.5, 1.5, 1.5, 1.5, 1.5, 4] },
-      // Strip-down sessions that ran longer than a weekday evening.
-      dates: { '2025-01-06': 2, '2025-01-07': 3 },
     },
     schedule: {
       pageTitle: 'YL1 Schedule',

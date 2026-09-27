@@ -4,6 +4,7 @@
   const procedure = {
     id: 'inspect.frame-inside',
     kind: 'task',
+    after: ['strip.top-end'],
     title: 'Look inside the frame',
     purpose: 'See how far rust has gone inside the pressed-steel frame.',
     requires: { tools: [], materials: [], skills: [] },

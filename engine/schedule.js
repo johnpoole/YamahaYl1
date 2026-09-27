@@ -1,5 +1,6 @@
 // Runs a plan day by day: daily routines first, then jobs in the order the plan calls them,
-// each starting only when what it needs has been made and any wait has passed. Hours are the
+// each starting only when what it needs has been made and any wait has passed. A plan with
+// oneJobADay: true starts at most one of its jobs a day, the way separate sessions run. Hours are the
 // procedures' own estimates. How many hours a day there are comes from the project's calendar.
 //
 // Calendar, all fields optional except start:
@@ -10,7 +11,6 @@
 //     { type: 'weekly', hours: [Sun, Mon, … Sat] }    hours by day of the week
 //     { type: 'daylight', latitude, overheadHours, maxWorkHours, minWorkHours }
 //                                                     sunrise to sunset, less overhead, within limits
-//   dates   { 'YYYY-MM-DD': hours } for days that had their own hours, such as past sessions
 (function (root) {
   'use strict';
 
@@ -37,28 +37,8 @@
   const dateOn = (cal, day) => { const d = startDate(cal); d.setUTCDate(d.getUTCDate() + day); return d; };
   const dayOfYear = (d) => Math.floor((d - Date.UTC(d.getUTCFullYear(), 0, 1)) / 86400000) + 1;
 
-  // Every date given its own hours must be a real date inside the calendar, or its hours would never count.
-  function checkDates(cal) {
-    if (cal.dates === undefined) return;
-    if (!cal.dates || typeof cal.dates !== 'object') throw new Error(`schedule: calendar.dates must be { 'YYYY-MM-DD': hours }, got ${JSON.stringify(cal.dates)}`);
-    const first = dateOn(cal, 0).toISOString().slice(0, 10), last = dateOn(cal, cal.days - 1).toISOString().slice(0, 10);
-    for (const [iso, h] of Object.entries(cal.dates)) {
-      const real = /^\d{4}-\d{2}-\d{2}$/.test(iso) && !Number.isNaN(Date.parse(`${iso}T00:00:00Z`)) && new Date(`${iso}T00:00:00Z`).toISOString().slice(0, 10) === iso;
-      if (!real) throw new Error(`schedule: calendar.dates has "${iso}", which is not a date like "2026-09-15"`);
-      if (iso < first || iso > last) throw new Error(`schedule: calendar.dates has ${iso}, outside the calendar's ${first} to ${last}`);
-      if (!(typeof h === 'number' && h >= 0)) throw new Error(`schedule: calendar.dates["${iso}"] must be hours ≥ 0, got ${JSON.stringify(h)}`);
-    }
-  }
-
   // Working hours on a given day, and the daylight when the calendar uses it.
   function workHours(cal, day) {
-    const base = usualHours(cal, day);
-    const iso = dateOn(cal, day).toISOString().slice(0, 10);
-    if (cal.dates && Object.prototype.hasOwnProperty.call(cal.dates, iso)) return { work: cal.dates[iso], light: base.light };
-    return base;
-  }
-
-  function usualHours(cal, day) {
     const h = cal.hours, d = dateOn(cal, day);
     if (h.type === 'fixed') {
       if (!(typeof h.hours === 'number' && h.hours >= 0)) throw new Error('schedule: fixed calendar needs hours ≥ 0');
@@ -105,7 +85,11 @@
     const jobs = [], lastMaker = new Map(), toolMaker = new Map(), lastRun = new Map(), stack = [];
     for (const e of r.events) {
       const p = reg.get(e.id);
-      if (e.type === 'enter') { stack.push({ id: e.id, window: merge(stack.length ? stack[stack.length - 1].window : { from: 0, to: Infinity }, p) }); continue; }
+      if (e.type === 'enter') {
+        const up = stack.length ? stack[stack.length - 1] : { window: { from: 0, to: Infinity }, oneADay: false };
+        stack.push({ id: e.id, window: merge(up.window, p), oneADay: up.oneADay || p.oneJobADay === true });
+        continue;
+      }
       const frame = stack.pop();
       if (p.kind === 'plan' || p.kind === 'skill') continue;
       const deps = new Set();
@@ -115,7 +99,7 @@
         if (!lastRun.has(a)) throw new Error(`schedule: ${e.id} comes after ${a}, but the plan does not run ${a} before ${e.id}; move the call to ${a} earlier (checkProject reports this too)`);
         deps.add(lastRun.get(a));
       }
-      const job = { index: jobs.length, id: e.id, hours: p.estimate.hours, waitDays: p.estimate.waitDays || 0, deps: [...deps], window: frame.window, parents: stack.map((f) => f.id) };
+      const job = { index: jobs.length, id: e.id, hours: p.estimate.hours, waitDays: p.estimate.waitDays || 0, deps: [...deps], window: frame.window, oneADay: frame.oneADay, parents: stack.map((f) => f.id) };
       jobs.push(job);
       for (const t of p.produces.tools) { lastMaker.set(t, job.index); if (!toolMaker.has(t)) toolMaker.set(t, job.index); }
       for (const m of p.produces.materials) lastMaker.set(m.id, job.index);
@@ -128,7 +112,6 @@
     if (!calendar || typeof calendar !== 'object') throw new Error('schedule: run needs the project calendar');
     const cal = { ...DEFAULTS, ...calendar, hours: calendar.hours || DEFAULTS.hours };
     startDate(cal);
-    checkDates(cal);
     const { jobs, routines, toolMaker } = compile(rootId, reg, cat, L);
     const left = jobs.map((j) => j.hours);
     const done = jobs.map(() => null);   // day finished
@@ -144,12 +127,15 @@
       const routineHours = active.filter((r) => !r.afterDark).reduce((t, r) => t + routineHoursOn(r, day), 0);
       let free = Math.max(0, work - routineHours);
       const did = [];
+      let sessionToday = false;   // a oneJobADay job has had hours today
       const ready = (j) => day >= j.window.from && j.deps.every((d) => done[d] !== null && day > done[d] + jobs[d].waitDays - (jobs[d].waitDays ? 0 : 1));
       for (let i = cursor; i < jobs.length && free > 1e-9; i++) {
         if (done[i] !== null || !ready(jobs[i])) continue;
+        if (jobs[i].oneADay && sessionToday) continue;
         const h = Math.min(free, left[i]);
         left[i] -= h; free -= h;
         if (h > 0) did.push({ id: jobs[i].id, hours: h });
+        if (h > 0 && jobs[i].oneADay) sessionToday = true;
         if (left[i] <= 1e-9) done[i] = day;
       }
       while (cursor < jobs.length && done[cursor] !== null) cursor++;

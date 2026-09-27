@@ -4,7 +4,7 @@
   const procedure = {
     id: 'frame.inspect',
     kind: 'task',
-    after: ['strip.tank-seat', 'inspect.frame-inside'],
+    after: ['inspect.frame-inside'],
     title: 'Inspect the frame',
     purpose: 'Look for cracks and rust damage before building on it. Backlog B-019.',
     requires: { tools: ['caliper'], materials: [], skills: [] },

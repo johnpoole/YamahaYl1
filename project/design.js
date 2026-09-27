@@ -4,9 +4,8 @@
 (function (root) {
   'use strict';
 
-  // The timeline starts on the day of the first photo. Strip-down sessions are pinned to the
-  // days their photos were taken (dates from the photo file names, which are in UTC). Work
-  // resumes on RESUME; riding waits for the roads to clear.
+  // The timeline starts with the strip-down. Work resumes on RESUME; riding waits for the roads
+  // to clear.
   const START = '2024-11-12';
   const RESUME = '2026-10-03';
   const RIDING = '2027-05-01';

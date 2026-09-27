@@ -40,8 +40,6 @@ test('every photo is listed once and every listed photo is there', () => {
   const files = fs.readdirSync(path.join(root, 'media', 'photos')).filter((f) => f.endsWith('.jpg')).sort();
   assert.deepEqual(PHOTOS.map((p) => p.file).sort(), files);
   for (const p of PHOTOS) {
-    assert.match(p.date, /^20\d\d-\d\d-\d\d$/);
-    assert.ok(D.dayOf(p.date) >= 0 && D.dayOf(p.date) < D.dayOf(D.RESUME), `${p.file} dated ${p.date} is outside the strip-down`);
     assert.ok(p.caption.length > 10, `${p.file} has no caption`);
   }
 });

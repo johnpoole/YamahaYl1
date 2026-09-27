@@ -14,8 +14,8 @@ shown in 3D on any day of the work.
 
 ## The timeline
 
-The strip-down sessions are pinned to the days their photos were taken, from 12 November 2024 to
-10 January 2025. The plan from the backlog, milestones M1 to M5, runs from 3 October 2026 on four
+The strip-down runs in the order of its photos, and each photo in `media/photos.js` names the
+job it shows. The plan from the backlog, milestones M1 to M5, runs from 3 October 2026 on four
 hours each weekend day and an hour and a half each weekday evening. Break-in waits for
 1 May 2027. Hours and prices are estimates.
 

@@ -659,14 +659,13 @@ try {
   // ---------- the bike by day ----------
   // Runs the rebuild schedule. Each part is as found until a job takes it off, and rebuilt once
   // the job that puts it back on is finished. The slider counts only the days with work, so the
-  // days with nothing done take no room. A photo belongs to the last day of work on or before it.
+  // days with nothing done take no room. A photo shows on the day its job is finished.
   {
     const dayInput = document.getElementById('day'), nextBtn = document.getElementById('next'), dayDate = document.getElementById('daydate'), dayText = document.getElementById('daytext');
     const photoImg = document.getElementById('photo'), photoCap = document.getElementById('photocap'), photoDate = document.getElementById('photodate');
     const jobsList = document.getElementById('jobs'), partsTable = document.getElementById('parts');
     const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const STATE = { original: 'As found', off: 'Off the bike', restored: 'Rebuilt' };
-    const photoDays = PHOTOS.map((p) => Dz.dayOf(p.date));
     photoImg.addEventListener('error', () => showError(new Error(`the photo ${photoImg.src} did not load`)));
 
     const thumbs = PHOTOS.map((p, i) => {
@@ -729,12 +728,12 @@ try {
       const last = Math.max(...result.done);
       stops = result.days.filter((d) => d.did.length).map((d) => d.day);
       if (stops[stops.length - 1] !== last) throw new Error(`the last job finishes on schedule day ${last}, which has no work recorded`);
-      photoStop = photoDays.map((d, k) => {
-        const i = stops.reduce((best, s, j) => (s <= d ? j : best), -1);
-        if (i < 0) throw new Error(`the photo ${PHOTOS[k].file} was taken before the first day of work`);
-        return i;
-      });
       const stopOf = (v) => { const i = stops.indexOf(v); if (i < 0) throw new Error(`schedule day ${v} has no work`); return i; };
+      photoStop = PHOTOS.map((p) => {
+        const d = reg.has(p.job) ? result.finish(p.job) : null;
+        if (d === null) throw new Error(`the photo ${p.file} shows ${p.job}, which the schedule does not finish`);
+        return stopOf(d);
+      });
       dayInput.max = String(stops.length - 1);
       dayInput.disabled = false;
 

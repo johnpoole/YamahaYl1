@@ -4,6 +4,7 @@
   const procedure = {
     id: 'strip.headlight',
     kind: 'task',
+    after: ['record.as-found'],
     removes: ['headlight'],
     title: 'Take out the headlight and speedometer',
     purpose: 'See the wiring in the headlight shell, and free the speedometer.',

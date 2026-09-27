@@ -29,9 +29,6 @@ Each tool and material in a project's catalog names its `source`:
 - `{ type: 'weekly', hours: [Sun, Mon, … Sat] }` — hours by day of the week
 - `{ type: 'daylight', latitude, overheadHours, maxWorkHours, minWorkHours }` — sunrise to sunset
 
-`calendar.dates`, `{ 'YYYY-MM-DD': hours }`, gives single days their own hours, such as past
-sessions that ran longer than the usual day. Each date must fall inside the calendar.
-
 A job waits for another through something the other makes: a tool, a material, or a state
 such as a settled bed, or through `after`. A job with `estimate.waitDays` holds back the jobs that use what it makes.
 
@@ -48,6 +45,11 @@ was finished, or null if it was not finished by the end.
 `schedule.partTimeline(result, reg)` gives every take-off and put-back in the order the schedule
 finishes them, and `stateOn(part, day)`: `'original'` until something touches the part, `'off'`
 once a job takes it off, `'restored'` once a job builds it. The bike's 3D view uses it.
+
+## One job a day
+
+A plan with `oneJobADay: true` starts at most one of its jobs on any day, for work done in
+separate sessions. A job that runs past its day carries on the next.
 
 ## Order without a material
 

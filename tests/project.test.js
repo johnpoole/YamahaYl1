@@ -32,16 +32,16 @@ test('every job is scheduled, and none runs past its window', () => {
   assert.equal(r.dateOf(0), D.START);
 });
 
-test('each strip-down session falls on the day its photos were taken', () => {
+test('each photo shows a job the strip-down runs, and the photos run in the order of the work', () => {
   const r = run();
-  const sessions = [...reg.values()].filter((p) => /^plan\.day-/.test(p.id));
-  assert.equal(sessions.length, 9);
-  const photoDates = new Set(PHOTOS.map((p) => p.date));
-  for (const p of sessions) {
-    const date = p.id.slice('plan.day-'.length);
-    assert.equal(p.window.from, D.dayOf(date), `${p.id} window`);
-    assert.equal(r.dateOf(r.finish(p.id)), date, `${p.id} finished on ${r.dateOf(r.finish(p.id))}`);
-    assert.ok(photoDates.has(date), `no photo taken on ${date}`);
+  const strip = new Set(L.trace('plan.strip-down', reg).map((x) => x.id));
+  let last = -1, lastJob = null;
+  for (const p of PHOTOS) {
+    assert.ok(strip.has(p.job), `${p.file} shows ${p.job}, which the strip-down does not run`);
+    const i = r.jobs.findIndex((j) => j.id === p.job);
+    assert.ok(i > last || p.job === lastJob, `${p.file} shows ${p.job}, which finishes before ${lastJob} in the photos before it`);
+    assert.ok(r.done[i] >= (last < 0 ? 0 : r.done[last]), `${p.file}: ${p.job} finishes on day ${r.done[i]}, before ${lastJob}`);
+    last = i; lastJob = p.job;
   }
 });
 
@@ -61,10 +61,10 @@ test('the rebuild waits for its start date, and riding waits for the roads', () 
     `the top end starts day ${first.get('engine.top-end')}, ${first.get('engine.top-end') - r.finish('engine.bore')} days after the cylinders go to the machine shop`);
 });
 
-test('on 10 January 2025 the bike stands as the last photos show it', () => {
+test('at the end of the strip-down the bike stands as the last photos show it', () => {
   const r = run();
   const tl = S.partTimeline(r, reg);
-  const day = D.dayOf('2025-01-10');
+  const day = r.finish('plan.strip-down');
   const state = Object.fromEntries(Object.keys(D.PARTS).map((id) => [id, tl.stateOn(id, day)]));
   assert.deepEqual(state, {
     frame: 'original', 'front-end': 'original', headlight: 'off', 'front-wheel': 'original', 'rear-wheel': 'original',
@@ -105,5 +105,14 @@ test('the frame is empty when its rust is treated', () => {
   const start = r.days.find((d) => d.did.some((x) => x.id === 'frame.treat')).day;
   for (const id of ['front-end', 'front-wheel', 'rear-wheel', 'rear-suspension', 'engine', 'electrics', 'tank', 'seat']) {
     assert.equal(tl.stateOn(id, start - 1), 'off', `${id} is on the frame when frame.treat starts on ${r.dateOf(start)}`);
+  }
+});
+
+test('each strip-down job starts after the one before it is finished, so the bike can be seen after every step', () => {
+  const r = run();
+  const ids = reg.get('plan.strip-down').steps.map((s) => s.call);
+  for (let k = 1; k < ids.length; k++) {
+    const start = r.days.find((d) => d.did.some((x) => x.id === ids[k])).day;
+    assert.ok(start > r.finish(ids[k - 1]), `${ids[k]} starts on day ${start}, the day ${ids[k - 1]} finishes`);
   }
 });

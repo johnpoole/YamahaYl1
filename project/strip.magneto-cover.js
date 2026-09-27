@@ -4,6 +4,7 @@
   const procedure = {
     id: 'strip.magneto-cover',
     kind: 'task',
+    after: ['strip.headlight'],
     removes: ['magneto-cover'],
     title: 'Take off the magneto cover',
     purpose: 'See the points and flywheel on the left of the engine.',
