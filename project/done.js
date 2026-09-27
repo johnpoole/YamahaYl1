@@ -2,6 +2,8 @@
 (function (root) {
   'use strict';
   const DONE = [
+    'docs.photo-index',
+    'docs.work-log',
     'engine.remove',
     'frame.number',
     'inspect.frame-inside',
