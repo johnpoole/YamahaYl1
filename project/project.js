@@ -44,7 +44,7 @@
       intro: 'Work resumes 3 October 2026, four hours on weekend days and an hour and a half on weekday evenings. Riding starts 1 May 2027. Hours are estimates.',
       // Each stage ends with a job; the plan is shaped like the bike, not the stages.
       milestones: [
-        ['inspect.frame-inside', 'Strip-down'],
+        ['frame.number', 'Strip-down'],
         ['parts.list', 'Assessment'],
         ['exhaust.install', 'Engine'],
         ['bodywork.install', 'Chassis and electrics'],

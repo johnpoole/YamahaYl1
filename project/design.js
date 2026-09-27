@@ -79,6 +79,7 @@
     'spec.pumpClearance': '0.25–0.35',
     'spec.clutchPlay': '2–3',
     'spec.serial': 'L1-47603',
+    'spec.frameNumber': 'Y33-47603',
     'breakIn.km': 300,
   };
 

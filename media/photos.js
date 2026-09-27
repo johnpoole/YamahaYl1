@@ -19,6 +19,8 @@
     ['PXL_20250108_183134527.MP.jpg', 'strip.top-end', 'Cylinder block and heads on the bench.'],
     ['PXL_20250109_220023834.jpg', 'strip.top-end', 'Pistons on the cases, engine L1-47603.'],
     ['PXL_20250110_221342751.jpg', 'inspect.frame-inside', 'Rust inside the frame.'],
+    ['PXL_20260927_202830465.jpg', 'frame.number', 'Frame number Y33-47603 on the front of the steering head.'],
+    ['PXL_20260927_202940425.jpg', 'frame.number', 'The steering head from the front, the frame number between the fork legs.'],
   ];
 
   const PHOTOS = LIST.map(([file, job, caption]) => ({ file, job, caption }));
