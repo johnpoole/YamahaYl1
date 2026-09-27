@@ -15,7 +15,7 @@
     root: 'plan.yl1',
     pageTitle: 'YL1 Rebuild',
     heading: 'Yamaha YL1 rebuild',
-    intro: 'A 1966–1967 Yamaha YL1 Twin Jet 100, engine {spec.serial}, from the bike as found to a safe, road-legal machine. The prices are rough. Start from the plan.',
+    intro: 'A 1966 Yamaha YL1 Twin Jet 100, engine {spec.serial}, frame {spec.frameNumber}, from the bike as found to a safe, road-legal machine. The prices are rough. Start from the plan.',
     labels: {
       kitHeading: 'Tools in the shop',
       kitIntro: 'Already owned. Anything else is bought.',

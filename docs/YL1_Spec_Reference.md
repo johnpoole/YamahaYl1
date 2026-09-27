@@ -1,5 +1,7 @@
 # YL-1 Specification Reference
-## Serial: L1-47603 (YL-1 Twin Jet 100)
+## Serial: engine L1-47603, frame Y33-47603 (1966 YL-1 Twin Jet 100)
+
+The year is taken from other YL1s: frames Y33-29698 and Y33-46101 are sold as 1966 bikes. Yamaha did not stamp a date.
 
 **Source:** Intertec Publishing — *How to Fix Your Yamaha Two Cylinder, Two-Stroke Motorcycle* (1975). OCR extracted from `2Cyl2StrMan_extracted.txt`. Pages cited.
 

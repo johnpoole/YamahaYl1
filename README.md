@@ -1,6 +1,6 @@
 # Yamaha YL1 rebuild
 
-The rebuild of a 1966–1967 Yamaha YL1 Twin Jet 100, engine L1-47603, written as procedures and
+The rebuild of a 1966 Yamaha YL1 Twin Jet 100, engine L1-47603, frame Y33-47603, written as procedures and
 shown in 3D on any day of the work.
 
 | Folder | What is in it |
